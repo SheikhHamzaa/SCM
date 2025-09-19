@@ -62,7 +62,7 @@ interface cityDrawerProps {
   triggerButton?: React.ReactNode;
 }
 
-const cityDrawer: React.FC<cityDrawerProps> = ({
+const CityDrawer: React.FC<cityDrawerProps> = ({
   isDrawerOpen,
   setIsDrawerOpen,
   onSave,
@@ -251,4 +251,4 @@ const cityDrawer: React.FC<cityDrawerProps> = ({
   );
 };
 
-export default cityDrawer;
+export default CityDrawer;

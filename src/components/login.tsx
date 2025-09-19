@@ -9,12 +9,18 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
+interface LoginFormData {
+  username: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const form = useForm({
+  const form = useForm<LoginFormData>({
     defaultValues: {
       username: '',
       password: '',
@@ -22,7 +28,7 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     console.log('Login attempt:', data);
     

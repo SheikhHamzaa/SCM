@@ -1,14 +1,11 @@
 'use client';
 
-import React, { Children, useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ChevronDown,
   ChevronRight,
-  Menu,
   Package,
   Settings,
-  FileText,
   BarChart3,
   Shield,
   Building2,
@@ -20,11 +17,9 @@ import {
   Tag,
   Layers,
   Plus,
-  X,
   Book,
   DollarSign,
   User,
-  ChartArea,
   Key,
   Clock,
   Currency,
@@ -49,14 +44,6 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
-interface MenuItemRenderProps {
-  item: MenuItem;
-  level: number;
-  isExpanded: boolean;
-  isActive: boolean;
-  hasChildren: boolean;
-}
-
 // Sidebar dimensions optimized for QuickBooks-style layout
 const SIDEBAR_DIMENSIONS = {
   expanded: 200,
@@ -75,7 +62,6 @@ const ANIMATIONS = {
 
 export function Sidebar({ 
   isCollapsed, 
-  onToggle, 
   theme = 'default', 
   isMobileOpen = false, 
   onMobileClose 

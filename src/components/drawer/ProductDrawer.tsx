@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import Barcode from "react-barcode-generator";
+import Image from "next/image";
+import JsBarcode from "jsbarcode";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -115,6 +116,7 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
   const itemType = ["Polyster", "Cotton"];
   const itemCategory = ["A quality", "B quality", "C quality"];
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const barcodeRef = useRef<SVGSVGElement>(null);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -194,6 +196,28 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
     setImagePreview(null);
     form.setValue("image", "");
   };
+
+  // Generate barcode using jsbarcode
+  const generateBarcode = (text: string) => {
+    if (barcodeRef.current && text) {
+      JsBarcode(barcodeRef.current, text, {
+        format: "CODE128",
+        width: 1.5,
+        height: 40,
+        displayValue: true,
+        fontSize: 10,
+        background: "#ffffff",
+        lineColor: "#000000",
+      });
+    }
+  };
+
+  // Generate barcode when designNo changes
+  useEffect(() => {
+    if (designNo) {
+      generateBarcode(designNo);
+    }
+  }, [designNo]);
 
   // Reset form when drawer opens/closes or when editing changes
   useEffect(() => {
@@ -375,7 +399,7 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
                   <FormField
                     control={form.control}
                     name="image"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel className="text-xs font-medium text-[#393A3D] mb-1 block">
                           Product Image
@@ -384,9 +408,11 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
                           <div className="space-y-2">
                             {imagePreview ? (
                               <div className="relative">
-                                <img
+                                <Image
                                   src={imagePreview}
                                   alt="Product preview"
+                                  width={200}
+                                  height={80}
                                   className="w-full h-20 object-contain rounded-lg border border-[#D1D5DB] bg-gray-50"
                                 />
                                 <Button
@@ -773,16 +799,7 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
                     </div>
                     <div className="flex justify-center px-4">
                       <div className="bg-white p-2 rounded border border-[#D1D5DB] shadow-sm">
-                        <Barcode
-                          value={designNo}
-                          format="CODE128"
-                          width={1.5}
-                          height={40}
-                          displayValue={true}
-                          fontSize={10}
-                          background="#ffffff"
-                          lineColor="#000000"
-                        />
+                        <svg ref={barcodeRef}></svg>
                       </div>
                     </div>
                   </div>

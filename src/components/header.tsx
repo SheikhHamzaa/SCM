@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Bell, User, ChevronDown, Plus, Menu, Settings, LogOut, HelpCircle, UserCircle, Shield } from 'lucide-react';
+import { Search, Bell, User, ChevronDown,  Menu, Settings, LogOut, HelpCircle, UserCircle, Shield } from 'lucide-react';
 import { TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
 import { useRouter } from 'next/navigation';
