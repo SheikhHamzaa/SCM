@@ -1,13 +1,21 @@
-'use client';
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { LogIn, Eye, EyeOff, Building2, Shield } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useForm } from 'react-hook-form';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+"use client";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { LogIn, Eye, EyeOff, Building2, Shield } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import Image from "next/image";
 
 interface LoginFormData {
   username: string;
@@ -22,34 +30,37 @@ const LoginPage: React.FC = () => {
 
   const form = useForm<LoginFormData>({
     defaultValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       rememberMe: false,
     },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    console.log('Login attempt:', data);
-    
+    console.log("Login attempt:", data);
+
     // Simulate login process
     setTimeout(() => {
       // Store user data (in real app, this would come from API)
-      localStorage.setItem('userToken', 'demo-token');
-      localStorage.setItem('userData', JSON.stringify({
-        name: 'John Doe',
-        email: data.username,
-      }));
-      
+      localStorage.setItem("userToken", "demo-token");
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          name: "John Doe",
+          email: data.username,
+        })
+      );
+
       setIsLoading(false);
-      router.push('/isf/dashboard'); // Redirect to dashboard
+      router.push("/isf/dashboard"); // Redirect to dashboard
     }, 1500);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
       {/* Left Side - Brand Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
@@ -58,14 +69,17 @@ const LoginPage: React.FC = () => {
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute inset-0 opacity-30">
-          <div className="w-full h-full" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-          }}></div>
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
         </div>
-        
+
         <div className="relative z-10 max-w-lg mx-auto px-8 text-center text-white">
           {/* Logo Section */}
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -74,9 +88,13 @@ const LoginPage: React.FC = () => {
             <div className="flex items-center justify-center space-x-4 mb-6">
               <div className="relative">
                 <div className="w-20 h-20 relative">
-                  <motion.div 
+                  <motion.div
                     animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="absolute inset-0 bg-white/20 rounded-2xl transform rotate-12"
                   ></motion.div>
                   <div className="absolute top-2 left-2 w-16 h-4 bg-red-500 rounded-sm transform -rotate-12"></div>
@@ -85,7 +103,7 @@ const LoginPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -113,18 +131,22 @@ const LoginPage: React.FC = () => {
           >
             <div className="flex items-center space-x-3">
               <Shield className="w-5 h-5 text-green-400" />
-              <span className="text-sm text-blue-100">Secure & Reliable Platform</span>
+              <span className="text-sm text-blue-100">
+                Secure & Reliable Platform
+              </span>
             </div>
             <div className="flex items-center space-x-3">
               <Building2 className="w-5 h-5 text-blue-300" />
-              <span className="text-sm text-blue-100">Enterprise Grade Solution</span>
+              <span className="text-sm text-blue-100">
+                Enterprise Grade Solution
+              </span>
             </div>
           </motion.div>
         </div>
       </motion.div>
 
       {/* Right Side - Login Form */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
@@ -132,13 +154,15 @@ const LoginPage: React.FC = () => {
       >
         <div className="w-full max-w-md">
           {/* Welcome Header */}
-          <motion.div 
+          <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
             className="text-center mb-8"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome Back
+            </h2>
             <p className="text-gray-600">Please sign in to your account</p>
           </motion.div>
 
@@ -149,14 +173,20 @@ const LoginPage: React.FC = () => {
             transition={{ delay: 0.6, duration: 0.5 }}
           >
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 {/* Username Field */}
                 <FormField
                   control={form.control}
                   name="username"
-                  rules={{ 
+                  rules={{
                     required: "Username or email is required",
-                    minLength: { value: 3, message: "Username must be at least 3 characters" }
+                    minLength: {
+                      value: 3,
+                      message: "Username must be at least 3 characters",
+                    },
                   }}
                   render={({ field }) => (
                     <FormItem>
@@ -181,9 +211,12 @@ const LoginPage: React.FC = () => {
                 <FormField
                   control={form.control}
                   name="password"
-                  rules={{ 
+                  rules={{
                     required: "Password is required",
-                    minLength: { value: 6, message: "Password must be at least 6 characters" }
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
                   }}
                   render={({ field }) => (
                     <FormItem>
@@ -244,7 +277,7 @@ const LoginPage: React.FC = () => {
                       </FormItem>
                     )}
                   />
-                  
+
                   <Button
                     type="button"
                     variant="ghost"
@@ -264,16 +297,39 @@ const LoginPage: React.FC = () => {
                   {isLoading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                       className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
                     />
                   ) : (
                     <LogIn className="w-5 h-5 mr-2" />
                   )}
-                  {isLoading ? 'Signing In...' : 'Sign In'}
+                  {isLoading ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
             </Form>
+            {/* Powered by ISF Consultant line outside the form */}
+            <div className="flex justify-center items-center mt-8 text-gray-600 text-sm">
+              <Image
+                className="mr-2"
+                src="/isf_logo.png"
+                alt="ISF Consultant Logo"
+                width={30}
+                height={30}
+              />
+              <span>Powered by </span>
+              <a
+                href="https://www.isfconsultant.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-600 hover:text-blue-800 hover:underline ml-2 transition-colors duration-200"
+              >
+                ISF Consultant.
+              </a>
+            </div>
           </motion.div>
         </div>
       </motion.div>

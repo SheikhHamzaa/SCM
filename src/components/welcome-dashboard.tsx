@@ -63,30 +63,6 @@ export function WelcomeDashboard() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Welcome Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white rounded-xl p-6 lg:p-8 qb-shadow-lg border border-[var(--border)]"
-      >
-        <div className="text-center">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-16 h-16 bg-gradient-to-br from-[var(--qb-blue-primary)] to-[var(--qb-blue-dark)] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
-          >
-            <Package className="w-8 h-8 text-white" />
-          </motion.div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-[var(--foreground)] mb-2">
-            Welcome to PolyTex Supply Chain Management
-          </h1>
-          <p className="text-[var(--muted-foreground)] text-base lg:text-lg max-w-2xl mx-auto">
-            Streamline your supply chain operations with our comprehensive management platform designed for efficiency and growth
-          </p>
-        </div>
-      </motion.div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">

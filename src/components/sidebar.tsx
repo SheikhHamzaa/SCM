@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronRight,
   Package,
@@ -23,10 +23,10 @@ import {
   Key,
   Clock,
   Currency,
-  CurrencyIcon
-} from 'lucide-react';
-import { useRouter, useParams } from 'next/navigation';
-import { TbBasket, TbDashboard } from 'react-icons/tb';
+  CurrencyIcon,
+} from "lucide-react";
+import { useRouter, useParams, usePathname } from "next/navigation";
+import { TbBasket, TbDashboard } from "react-icons/tb";
 
 interface MenuItem {
   id: string;
@@ -39,7 +39,7 @@ interface MenuItem {
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
-  theme?: 'default' | 'legacy-dark';
+  theme?: "default" | "legacy-dark";
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
 }
@@ -56,108 +56,248 @@ const ANIMATIONS = {
   sidebar: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
   submenu: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
   chevron: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
-  indicator: { type: 'spring', stiffness: 300, damping: 30 },
+  indicator: { type: "spring", stiffness: 300, damping: 30 },
   backdrop: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
 } as const;
 
-export function Sidebar({ 
-  isCollapsed, 
-  theme = 'default', 
-  isMobileOpen = false, 
-  onMobileClose 
+export function Sidebar({
+  isCollapsed,
+  theme = "default",
+  isMobileOpen = false,
+  onMobileClose,
 }: SidebarProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['setup']));
-  const [activeItem, setActiveItem] = useState<string>('product');
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(
+    new Set(["setup"])
+  );
 
   const menuItems: MenuItem[] = [
     {
-      id: 'dashboard',
-      label: 'Dashboard',
+      id: "dashboard",
+      label: "Dashboard",
       icon: <TbDashboard className="w-4 h-4" />,
-      href: '/dashboard'
+      href: "/dashboard",
     },
     {
-      id: 'setup',
-      label: 'Setup',
+      id: "setup",
+      label: "Setup",
       icon: <Settings className="w-4 h-4" />,
       children: [
-            { id: 'Company Profile', label: 'Company Profile', href: '/company-profile', icon: <Building2 className="w-3 h-3" /> },
+        {
+          id: "Company Profile",
+          label: "Company Profile",
+          href: "/company-profile",
+          icon: <Building2 className="w-3 h-3" />,
+        },
 
         {
-          id: 'item-setup',
-          label: 'Item Setup',
+          id: "item-setup",
+          label: "Item Setup",
           icon: <Package className="w-4 h-4" />,
           children: [
-            { id: 'product', label: 'Product', href: '/product', icon: <Package className="w-3 h-3" /> },
-            { id: 'item-type', label: 'Item Type', href: '/item-type', icon: <Tag className="w-3 h-3" /> },
-            { id: 'item-category', label: 'Item Category', href: '/item-category', icon: <Layers className="w-3 h-3" /> },
-            { id: 'uom', label: 'UOM', href: '/uom', icon: <Plus className="w-3 h-3" /> },
-            { id: 'final-destination', label: 'Final Destination', href: '/final-destination', icon: <MapPin className="w-3 h-3" /> },
-            { id: 'port-of-discharge', label: 'Port of Discharge', href: '/port-of-discharge', icon: <Anchor className="w-3 h-3" /> },
-          ]
+            {
+              id: "product",
+              label: "Product",
+              href: "/product",
+              icon: <Package className="w-3 h-3" />,
+            },
+            {
+              id: "item-type",
+              label: "Item Type",
+              href: "/item-type",
+              icon: <Tag className="w-3 h-3" />,
+            },
+            {
+              id: "item-category",
+              label: "Item Category",
+              href: "/item-category",
+              icon: <Layers className="w-3 h-3" />,
+            },
+            {
+              id: "uom",
+              label: "UOM",
+              href: "/uom",
+              icon: <Plus className="w-3 h-3" />,
+            },
+            {
+              id: "final-destination",
+              label: "Final Destination",
+              href: "/final-destination",
+              icon: <MapPin className="w-3 h-3" />,
+            },
+            {
+              id: "port-of-discharge",
+              label: "Port of Discharge",
+              href: "/port-of-discharge",
+              icon: <Anchor className="w-3 h-3" />,
+            },
+          ],
         },
         {
-          id: 'accounts',
-          label: 'Accounts',
+          id: "accounts",
+          label: "Accounts",
           icon: <Book className="w-4 h-4" />,
           children: [
-            { id: 'currency', label: 'Currency', href: '/currency', icon: <DollarSign className="w-3 h-3" /> },
-            { id: 'customer', label: 'Customer', href: '/customer', icon: <User className="w-3 h-3" /> },
-            { id: 'vendor', label: 'Vendor', href: '/vendor', icon: <Truck className="w-3 h-3" /> },
-          ]
+            {
+              id: "currency",
+              label: "Currency",
+              href: "/currency",
+              icon: <DollarSign className="w-3 h-3" />,
+            },
+            {
+              id: "customer",
+              label: "Customer",
+              href: "/customer",
+              icon: <User className="w-3 h-3" />,
+            },
+            {
+              id: "vendor",
+              label: "Vendor",
+              href: "/vendor",
+              icon: <Truck className="w-3 h-3" />,
+            },
+          ],
         },
         {
-          id: 'general-setup',
-          label: 'General Setup',
+          id: "general-setup",
+          label: "General Setup",
           icon: <Settings className="w-4 h-4" />,
           children: [
-            { id: 'country', label: 'Country', href: '/country', icon: <Globe className="w-3 h-3" /> },
-            { id: 'city', label: 'City', href: '/city', icon: <Building className="w-3 h-3" /> },
-          ]
-        }
-      ]
+            {
+              id: "country",
+              label: "Country",
+              href: "/country",
+              icon: <Globe className="w-3 h-3" />,
+            },
+            {
+              id: "city",
+              label: "City",
+              href: "/city",
+              icon: <Building className="w-3 h-3" />,
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'entry',
-      label: 'Entry',
+      id: "entry",
+      label: "Entry",
       icon: <Plus className="w-4 h-4" />,
-      href: '/entry',
+      href: "/entry",
       children: [
-        { id: 'scm', label: 'SCM', icon: <TbBasket className="w-3 h-3" />,children: [
-          { id: 'purchase', label: 'Purchase', icon: <CurrencyIcon className="w-3 h-3" /> },
-          { id: 'sale', label: 'Sale',icon: <Currency className="w-3 h-3" /> },
-          { id: 'inventory', label: 'Inventory', icon: <TbBasket className="w-3 h-3" /> }
-        ],
-        }
-      ]
+        {
+          id: "scm",
+          label: "SCM",
+          icon: <TbBasket className="w-3 h-3" />,
+          children: [
+            {
+              id: "purchase",
+              label: "Purchase",
+              icon: <CurrencyIcon className="w-3 h-3" />,
+              children: [
+                {
+                  id: "purchase-order",
+                  label: "Purchase Order",
+                  href: "/purchase-order",
+                  icon: <Book className="w-3 h-3" />,
+                },
+                {
+                  id: "goods-receipt",
+                  label: "Goods Receipt",
+                  href: "/goods-receipt",
+                  icon: <Package className="w-3 h-3" />,
+                },
+                {
+                  id: "purchase-invoice",
+                  label: "Purchase Invoice",
+                  href: "/purchase-invoice",
+                  icon: <Truck className="w-3 h-3" />,
+                },
+              ],
+            },
+            {
+              id: "sale",
+              label: "Sale",
+              icon: <Currency className="w-3 h-3" />,
+            },
+            {
+              id: "inventory",
+              label: "Inventory",
+              icon: <TbBasket className="w-3 h-3" />,
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'report',
-      label: 'Report',
+      id: "report",
+      label: "Report",
       icon: <BarChart3 className="w-4 h-4" />,
-      href: '/report'
+      href: "/report",
     },
     {
-      id: 'security',
-      label: 'Security',
+      id: "security",
+      label: "Security",
       icon: <Shield className="w-4 h-4" />,
       children: [
-        { id: 'user-type', label: 'User Type', href: '/user-type', icon: <User className="w-3 h-3" /> },
-        { id: 'create-user', label: 'Create User', href: '/create-user', icon: <User className="w-3 h-3" /> },
-        { id: 'audit-log', label: 'Audit Log', href: '/audit-log', icon: <Clock className="w-3 h-3" /> },
-        { id: 'change-password', label: 'Change Password', href: '/change-password', icon: <Key className="w-3 h-3" /> },
-      ]
-
-    }
+        {
+          id: "user-type",
+          label: "User Type",
+          href: "/user-type",
+          icon: <User className="w-3 h-3" />,
+        },
+        {
+          id: "create-user",
+          label: "Create User",
+          href: "/create-user",
+          icon: <User className="w-3 h-3" />,
+        },
+        {
+          id: "audit-log",
+          label: "Audit Log",
+          href: "/audit-log",
+          icon: <Clock className="w-3 h-3" />,
+        },
+        {
+          id: "change-password",
+          label: "Change Password",
+          href: "/change-password",
+          icon: <Key className="w-3 h-3" />,
+        },
+      ],
+    },
   ];
 
   // Add router for navigation
   const router = useRouter();
   const params = useParams();
-  const currentUser = params?.user || 'default-user'; // Get user from URL params
+  const pathname = usePathname();
+  const currentUser = params?.user || "default-user"; // Get user from URL params
+
+  // Function to determine if an item is active based on current pathname
+  const isItemActive = (item: MenuItem): boolean => {
+    if (!item.href) return false;
+    const expectedPath = `/${currentUser}${item.href}`;
+    return pathname === expectedPath;
+  };
+
+  // Function to find active item from current pathname
+  const findActiveItem = (items: MenuItem[]): string | null => {
+    for (const item of items) {
+      if (isItemActive(item)) {
+        return item.id;
+      }
+      if (item.children) {
+        const activeChild = findActiveItem(item.children);
+        if (activeChild) return activeChild;
+      }
+    }
+    return null;
+  };
+
+  const activeItem = findActiveItem(menuItems) || "dashboard";
 
   const toggleExpanded = (itemId: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(itemId)) {
         newSet.delete(itemId);
@@ -170,20 +310,19 @@ export function Sidebar({
 
   const renderMenuItem = (item: MenuItem, level: number = 0) => {
     const isExpanded = expandedItems.has(item.id);
-    const isActive = activeItem === item.id;
+    const isActive = isItemActive(item);
     const hasChildren = Boolean(item.children?.length);
 
     // Dynamic styling based on hierarchy level
     const menuItemStyles = {
-      padding: level === 0 ? 'pl-4' : level === 1 ? 'pl-6' : 'pl-7',
-      textSize: level === 0 ? 'text-sm' : level === 1 ? 'text-sm' : 'text-xs',
+      padding: level === 0 ? "pl-4" : level === 1 ? "pl-6" : "pl-7",
+      textSize: level === 0 ? "text-sm" : level === 1 ? "text-sm" : "text-xs",
     };
 
     const handleMenuClick = () => {
       if (hasChildren) {
         toggleExpanded(item.id);
       } else {
-        setActiveItem(item.id);
         // Navigate if href is provided
         if (item.href) {
           // Create dynamic route with user parameter
@@ -202,11 +341,14 @@ export function Sidebar({
         <motion.button
           onClick={handleMenuClick}
           className={`
-            w-full flex items-center justify-between py-2.5 px-3 ${menuItemStyles.padding}
+            w-full flex items-center justify-between py-2.5 px-3 ${
+              menuItemStyles.padding
+            }
             text-left rounded-lg transition-all duration-150 ease-in-out group
-            ${isActive 
-              ? 'bg-blue-600 text-white font-semibold shadow-sm' 
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+            ${
+              isActive
+                ? "bg-blue-600 text-white font-semibold shadow-sm"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white"
             }
             ${menuItemStyles.textSize} relative
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
@@ -218,14 +360,18 @@ export function Sidebar({
         >
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {item.icon && (
-              <span className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'}`}>
+              <span
+                className={`flex-shrink-0 ${
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 group-hover:text-gray-200"
+                }`}
+              >
                 {item.icon}
               </span>
             )}
             {!isCollapsed && (
-              <span className="font-medium truncate">
-                {item.label}
-              </span>
+              <span className="font-medium truncate">{item.label}</span>
             )}
           </div>
           {!isCollapsed && hasChildren && (
@@ -234,14 +380,16 @@ export function Sidebar({
               transition={ANIMATIONS.chevron}
               className="flex-shrink-0 ml-2"
             >
-              <ChevronRight 
+              <ChevronRight
                 className={`w-4 h-4 transition-colors duration-150 ${
-                  isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'
-                }`} 
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 group-hover:text-gray-200"
+                }`}
               />
             </motion.span>
           )}
-          
+
           {/* Active indicator */}
           {isActive && (
             <motion.div
@@ -258,13 +406,15 @@ export function Sidebar({
           {!isCollapsed && hasChildren && isExpanded && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
+              animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={ANIMATIONS.submenu}
               className="overflow-hidden"
             >
               <div className="py-1 space-y-1">
-                {item.children?.map(child => renderMenuItem(child, level + 1))}
+                {item.children?.map((child) =>
+                  renderMenuItem(child, level + 1)
+                )}
               </div>
             </motion.div>
           )}
@@ -298,19 +448,21 @@ export function Sidebar({
       {/* Sidebar */}
       <motion.aside
         initial={false}
-        animate={{ 
-          width: isCollapsed ? SIDEBAR_DIMENSIONS.collapsed : SIDEBAR_DIMENSIONS.expanded
+        animate={{
+          width: isCollapsed
+            ? SIDEBAR_DIMENSIONS.collapsed
+            : SIDEBAR_DIMENSIONS.expanded,
         }}
         transition={ANIMATIONS.sidebar}
         className={`
           bg-[#282828] border-r border-gray-200 h-screen flex flex-col
           shadow-lg shrink-0 relative
-          ${theme === 'default' ? 'bg-gray-800 text-white border-gray-700' : ''}
+          ${theme === "default" ? "bg-gray-800 text-white border-gray-700" : ""}
           lg:flex
-          ${isMobileOpen ? 'flex fixed top-0 left-0 z-50' : 'hidden lg:flex'}
+          ${isMobileOpen ? "flex fixed top-0 left-0 z-50" : "hidden lg:flex"}
         `}
         style={{
-          width: isMobileOpen ? SIDEBAR_DIMENSIONS.mobile : undefined
+          width: isMobileOpen ? SIDEBAR_DIMENSIONS.mobile : undefined,
         }}
       >
         {/* Header */}
@@ -325,14 +477,12 @@ export function Sidebar({
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                 >
                   <h2 className="text-lg font-semibold text-white truncate">
                     PolyTex
                   </h2>
-                  <p className="text-xs text-gray-400 truncate">
-                    Supply Chain
-                  </p>
+                  <p className="text-xs text-gray-400 truncate">Supply Chain</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -341,9 +491,7 @@ export function Sidebar({
 
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-2">
-          <nav>
-            {menuItems.map(item => renderMenuItem(item))}
-          </nav>
+          <nav>{menuItems.map((item) => renderMenuItem(item))}</nav>
         </div>
 
         {/* Footer */}
@@ -353,12 +501,14 @@ export function Sidebar({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="p-4 border-t border-gray-600 flex-shrink-0"
             >
               <div className="text-xs text-gray-400 text-center w-full">
                 <div className="truncate">PolyTex Supply Chain Management</div>
-                <span className="text-[10px] opacity-75 block mt-1">v1.0.0</span>
+                <span className="text-[10px] opacity-75 block mt-1">
+                  v1.0.0
+                </span>
               </div>
             </motion.div>
           )}
