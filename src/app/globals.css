@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.5rem;
+  
+  /* QuickBooks Color Palette - True to Original */
+  --qb-blue-primary: #0077c5;
+  --qb-blue-dark: #005a9c;
+  --qb-blue-light: #e8f4fd;
+  --qb-blue-lighter: #f0f8ff;
+  --qb-gray-50: #f8f9fa;
+  --qb-gray-100: #f1f3f4;
+  --qb-gray-200: #e8eaed;
+  --qb-gray-300: #dadce0;
+  --qb-gray-400: #9aa0a6;
+  --qb-gray-500: #5f6368;
+  --qb-gray-600: #3c4043;
+  --qb-gray-700: #202124;
+  --qb-green: #34a853;
+  --qb-red: #ea4335;
+  --qb-orange: #fbbc04;
+  --qb-yellow: #fef7e0;
+  
+  /* Sidebar colors matching QuickBooks exactly */
+  --qb-sidebar-bg: #ffffff;
+  --qb-sidebar-border: #e8eaed;
+  --qb-sidebar-text: #3c4043;
+  --qb-sidebar-text-muted: #5f6368;
+  --qb-sidebar-hover: #f1f3f4;
+  --qb-sidebar-active: #e8f4fd;
+  --qb-sidebar-active-text: #0077c5;
+  --qb-sidebar-divider: #f1f3f4;
+  --qb-sidebar-indicator: var(--qb-blue-primary);
+  
+  /* Header colors */
+  --qb-header-bg: #ffffff;
+  --qb-header-border: #e8eaed;
+  --qb-header-text: #3c4043;
+  
+  /* Map to standard variables */
+  --background: #f8f9fa;
+  --foreground: #202124;
+  --card: #ffffff;
+  --card-foreground: #202124;
+  --popover: #ffffff;
+  --popover-foreground: #202124;
+  --primary: #0077c5;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f9fa;
+  --secondary-foreground: #3c4043;
+  --muted: #f1f3f4;
+  --muted-foreground: #5f6368;
+  --accent: #e8f4fd;
+  --accent-foreground: #0077c5;
+  --destructive: #ea4335;
+  --border: #e8eaed;
+  --input: #ffffff;
+  --ring: #0077c5;
+  
+  /* Sidebar variables */
+  --sidebar: var(--qb-sidebar-bg);
+  --sidebar-foreground: var(--qb-sidebar-text);
+  --sidebar-primary: var(--qb-blue-primary);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--qb-sidebar-hover);
+  --sidebar-accent-foreground: var(--qb-sidebar-text);
+  --sidebar-border: var(--qb-sidebar-border);
+  --sidebar-ring: var(--qb-blue-primary);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --qb-sidebar-bg: #1f1f1f;
+  --qb-sidebar-text: #ffffff;
+  --qb-sidebar-text-muted: #9aa0a6;
+  --qb-sidebar-hover: #2d2d2d;
+  --qb-sidebar-active: #1a365d;
+  --qb-sidebar-border: #404040;
+  --qb-sidebar-indicator: var(--qb-blue-primary);
+  
+  --background: #121212;
+  --foreground: #ffffff;
+  --card: #1f1f1f;
+  --card-foreground: #ffffff;
+  --popover: #1f1f1f;
+  --popover-foreground: #ffffff;
+  --primary: #0077c5;
+  --primary-foreground: #ffffff;
+  --secondary: #2d2d2d;
+  --secondary-foreground: #ffffff;
+  --muted: #2d2d2d;
+  --muted-foreground: #9aa0a6;
+  --accent: #1a365d;
+  --accent-foreground: #0077c5;
+  --destructive: #ea4335;
+  --border: #404040;
+  --input: #2d2d2d;
+  --ring: #0077c5;
+  --sidebar: var(--qb-sidebar-bg);
+  --sidebar-foreground: var(--qb-sidebar-text);
+  --sidebar-primary: #0077c5;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--qb-sidebar-hover);
+  --sidebar-accent-foreground: var(--qb-sidebar-text);
+  --sidebar-border: var(--qb-sidebar-border);
+  --sidebar-ring: #0077c5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Legacy Dark QuickBooks-style sidebar theme */
+.qb-legacy-dark {
+  /* Inherit current light palette for rest unless overridden */
+  --qb-sidebar-bg: #2e2d2d;
+  --qb-sidebar-border: #3a3a3a;
+  --qb-sidebar-text: #f5f5f5;
+  --qb-sidebar-text-muted: #c2c2c2;
+  --qb-sidebar-hover: #333333;
+  --qb-sidebar-active: #1f5d82; /* legacy bluish selection background */
+  --qb-sidebar-active-text: #ffffff;
+  --qb-sidebar-divider: #3a3a3a;
+  --qb-sidebar-indicator: #2ca01c; /* QuickBooks brand green for active bar */
+  /* Map computed sidebar vars */
+  --sidebar: var(--qb-sidebar-bg);
+  --sidebar-foreground: var(--qb-sidebar-text);
+  --sidebar-primary: #2ca01c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--qb-sidebar-hover);
+  --sidebar-accent-foreground: var(--qb-sidebar-text);
+  --sidebar-border: var(--qb-sidebar-border);
+  --sidebar-ring: #2ca01c;
+}
+
+* {
+  border-color: var(--border);
+  outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Utility classes (raw CSS to avoid @apply lint issues) */
+.qb-transition-fast { transition: all 150ms cubic-bezier(0.4,0,0.2,1); }
+.qb-transition { transition: all 300ms cubic-bezier(0.4,0,0.2,1); }
+.focus-ring { outline: none; }
+.focus-ring:focus-visible { box-shadow: 0 0 0 2px var(--ring), 0 0 0 4px var(--background); }
+.qb-shadow { box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.1); }
+.qb-shadow-lg { box-shadow: 0 4px 8px -2px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.06); }
+.qb-shadow-xl { box-shadow: 0 8px 16px -4px rgba(0,0,0,0.12), 0 4px 6px -2px rgba(0,0,0,0.08); }
+.qb-shadow-hover:hover { box-shadow: 0 6px 14px -4px rgba(0,0,0,0.12), 0 4px 8px -4px rgba(0,0,0,0.08); }
+.scroll-smooth-touch { -webkit-overflow-scrolling: touch; }
+.container-responsive { max-width: 80rem; margin-left: auto; margin-right: auto; width: 100%; padding-left: 1rem; padding-right: 1rem; }
+@media (min-width: 640px){ .container-responsive { padding-left: 1.5rem; padding-right: 1.5rem; } }
+@media (min-width: 1024px){ .container-responsive { padding-left: 2rem; padding-right: 2rem; } }
+.sr-only { position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.is-active-outline:focus-visible { box-shadow: 0 0 0 2px var(--qb-blue-light), 0 0 0 4px var(--qb-blue-primary); }
+
+/* Scrollbar styling (webkit) */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--qb-gray-100); }
+::-webkit-scrollbar-thumb { background: var(--qb-gray-300); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--qb-gray-400); }
+
+/* Reduced motion preference adjustments */
+@media (prefers-reduced-motion: reduce) {
+  .qb-transition-fast, .qb-transition, * { transition: none !important; animation: none !important; }
+}
+
+
