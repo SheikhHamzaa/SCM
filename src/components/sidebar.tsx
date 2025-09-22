@@ -24,6 +24,7 @@ import {
   Clock,
   Currency,
   CurrencyIcon,
+  Ship,
 } from "lucide-react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import { TbBasket, TbDashboard } from "react-icons/tb";
@@ -176,6 +177,18 @@ export function Sidebar({
               label: "City",
               href: "/setup/general-setup/city",
               icon: <Building className="w-3 h-3" />,
+            },
+            {
+              id: "shipping",
+              label: "Shipping Line",
+              href: "/setup/general-setup/shipping-line",
+              icon: <Ship className="w-3 h-3" />,
+            },
+            {
+              id: "consignee",
+              label: "Consignee",
+              href: "/setup/general-setup/consignee",
+              icon: <User className="w-3 h-3" />,
             },
           ],
         },

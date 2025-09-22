@@ -158,16 +158,11 @@ const CustomerDrawer: React.FC<CustomerDrawerProps> = ({
 
   // Common currencies for the select dropdown
   const commonCurrencies = [
-    { code: "USD", name: "US Dollar", symbol: "$" },
-    { code: "EUR", name: "Euro", symbol: "€" },
-    { code: "GBP", name: "British Pound", symbol: "£" },
-    { code: "JPY", name: "Japanese Yen", symbol: "¥" },
-    { code: "CAD", name: "Canadian Dollar", symbol: "C$" },
-    { code: "AUD", name: "Australian Dollar", symbol: "A$" },
-    { code: "CHF", name: "Swiss Franc", symbol: "CHF" },
-    { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
+  { code: "USD", name: "US Dollar", symbol: "$" },
+    { code: "PKR", name: "Pakistani Rupee", symbol: "PKR" },
+    { code: "ZMW", name: "Zambian Kwacha", symbol: "ZMW" },
+    { code: "MZN", name: "Mozambican Metical", symbol: "MT" },
     { code: "INR", name: "Indian Rupee", symbol: "₹" },
-    { code: "BDT", name: "Bangladeshi Taka", symbol: "৳" },
   ];
 
   const onSubmit = (data: CustomerFormValues) => {
@@ -249,7 +244,7 @@ const CustomerDrawer: React.FC<CustomerDrawerProps> = ({
                     </FormItem>
                   )}
                 />
-
+                
                 {/* Basic Information */}
                 <div className="grid grid-cols-2 gap-2">
                   <FormField
