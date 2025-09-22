@@ -71,6 +71,7 @@ export function Sidebar({
   );
 
   const menuItems: MenuItem[] = [
+    // DASHBOARD
     {
       id: "dashboard",
       label: "Dashboard",
@@ -88,7 +89,7 @@ export function Sidebar({
           href: "/company-profile",
           icon: <Building2 className="w-3 h-3" />,
         },
-
+          // ITEM SETUP
         {
           id: "item-setup",
           label: "Item Setup",
@@ -97,41 +98,42 @@ export function Sidebar({
             {
               id: "product",
               label: "Product",
-              href: "/product",
+              href: "/setup/item-setup/product",
               icon: <Package className="w-3 h-3" />,
             },
             {
               id: "item-type",
               label: "Item Type",
-              href: "/item-type",
+              href: "/setup/item-setup/item-type",
               icon: <Tag className="w-3 h-3" />,
             },
             {
               id: "item-category",
               label: "Item Category",
-              href: "/item-category",
+              href: "/setup/item-setup/item-category",
               icon: <Layers className="w-3 h-3" />,
             },
             {
               id: "uom",
               label: "UOM",
-              href: "/uom",
+              href: "/setup/item-setup/uom",
               icon: <Plus className="w-3 h-3" />,
             },
             {
               id: "final-destination",
               label: "Final Destination",
-              href: "/final-destination",
+              href: "/setup/item-setup/final-destination",
               icon: <MapPin className="w-3 h-3" />,
             },
             {
               id: "port-of-discharge",
               label: "Port of Discharge",
-              href: "/port-of-discharge",
+              href: "/setup/item-setup/port-of-discharge",
               icon: <Anchor className="w-3 h-3" />,
             },
           ],
         },
+        // ACCOUNTS
         {
           id: "accounts",
           label: "Accounts",
@@ -140,23 +142,24 @@ export function Sidebar({
             {
               id: "currency",
               label: "Currency",
-              href: "/currency",
+              href: "/setup/accounts/currency",
               icon: <DollarSign className="w-3 h-3" />,
             },
             {
               id: "customer",
               label: "Customer",
-              href: "/customer",
+              href: "/setup/accounts/customer",
               icon: <User className="w-3 h-3" />,
             },
             {
               id: "vendor",
               label: "Vendor",
-              href: "/vendor",
+              href: "/setup/accounts/vendor",
               icon: <Truck className="w-3 h-3" />,
             },
           ],
         },
+        // GENERAL SETUP
         {
           id: "general-setup",
           label: "General Setup",
@@ -165,19 +168,20 @@ export function Sidebar({
             {
               id: "country",
               label: "Country",
-              href: "/country",
+              href: "/setup/general-setup/country",
               icon: <Globe className="w-3 h-3" />,
             },
             {
               id: "city",
               label: "City",
-              href: "/city",
+              href: "/setup/general-setup/city",
               icon: <Building className="w-3 h-3" />,
             },
           ],
         },
       ],
     },
+    // ENTRY
     {
       id: "entry",
       label: "Entry",
@@ -197,7 +201,7 @@ export function Sidebar({
                 {
                   id: "purchase-order",
                   label: "Purchase Order",
-                  href: "/purchase-order",
+                  href: "/entry/scm/purchase/purchase-order",
                   icon: <Book className="w-3 h-3" />,
                 },
                 {
@@ -228,12 +232,14 @@ export function Sidebar({
         },
       ],
     },
+    // REPORT
     {
       id: "report",
       label: "Report",
       icon: <BarChart3 className="w-4 h-4" />,
       href: "/report",
     },
+    // SECURITY
     {
       id: "security",
       label: "Security",
@@ -315,7 +321,7 @@ export function Sidebar({
 
     // Dynamic styling based on hierarchy level
     const menuItemStyles = {
-      padding: level === 0 ? "pl-4" : level === 1 ? "pl-6" : "pl-7",
+      padding: level === 0 ? "pl-3" : level === 1 ? "pl-5" : "pl-7",
       textSize: level === 0 ? "text-sm" : level === 1 ? "text-sm" : "text-xs",
     };
 
@@ -341,7 +347,7 @@ export function Sidebar({
         <motion.button
           onClick={handleMenuClick}
           className={`
-            w-full flex items-center justify-between py-2.5 px-3 ${
+            w-full flex items-center justify-between py-2.5 px-2 ${
               menuItemStyles.padding
             }
             text-left rounded-lg transition-all duration-150 ease-in-out group
@@ -490,8 +496,8 @@ export function Sidebar({
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-2">
-          <nav>{menuItems.map((item) => renderMenuItem(item))}</nav>
+        <div className="flex-1 py-2 overflow-y-auto sidebar-scroll">
+          <nav className="space-y-1 px-2">{menuItems.map((item) => renderMenuItem(item))}</nav>
         </div>
 
         {/* Footer */}

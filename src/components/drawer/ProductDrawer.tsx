@@ -279,7 +279,7 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
     >
       <DrawerTrigger asChild>
         {triggerButton || (
-          <Button className="bg-[#0077C5] hover:bg-[#005A94] text-white text-sm px-3 py-1.5 h-8">
+          <Button>
             <Plus className="h-3.5 w-3.5 mr-1.5" />
             New Product
           </Button>
