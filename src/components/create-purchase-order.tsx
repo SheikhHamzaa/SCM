@@ -122,7 +122,9 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
 }) => {
   // State management
   const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState<ProductWithOrderDetails[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<
+    ProductWithOrderDetails[]
+  >([]);
   const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(
     new Set()
   );
@@ -237,6 +239,21 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
     { value: "bale", label: "Bale" },
   ];
 
+  // Extract unique item types and categories from availableProducts
+  const itemTypes = Array.from(
+    new Set(availableProducts.map((product) => product.itemType))
+  ).map((itemType, index) => ({
+    id: `${index + 1}`,
+    name: itemType,
+  }));
+
+  const categories = Array.from(
+    new Set(availableProducts.map((product) => product.category))
+  ).map((category, index) => ({
+    id: `${index + 1}`,
+    name: category,
+  }));
+
   // Reset form when component opens/closes
   useEffect(() => {
     if (isOpen) {
@@ -272,7 +289,6 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
       tax3: 0,
       netAmount: 0,
     });
-
   };
 
   const handleProductSelection = (product: Product) => {
@@ -297,25 +313,31 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
   };
 
   const handleSaveProducts = (products: Product[]) => {
-    const productsWithDetails: ProductWithOrderDetails[] = products.map((product) => ({
-      ...product,
-      uom: "yards",
-      qty: 1,
-      rate: 0,
-      amount: 0,
-    }));
+    const productsWithDetails: ProductWithOrderDetails[] = products.map(
+      (product) => ({
+        ...product,
+        uom: "yards",
+        qty: 1,
+        rate: 0,
+        amount: 0,
+      })
+    );
     setSelectedProducts(productsWithDetails);
-    setSelectedProductIds(new Set(products.map(p => p.id)));
+    setSelectedProductIds(new Set(products.map((p) => p.id)));
     setIsProductDialogOpen(false);
   };
 
-  const updateProductDetails = (productId: string, field: keyof ProductWithOrderDetails, value: any) => {
+  const updateProductDetails = (
+    productId: string,
+    field: keyof ProductWithOrderDetails,
+    value: any
+  ) => {
     setSelectedProducts((prev) =>
       prev.map((product) => {
         if (product.id === productId) {
           const updatedProduct = { ...product, [field]: value };
           // Calculate amount when qty or rate changes
-          if (field === 'qty' || field === 'rate') {
+          if (field === "qty" || field === "rate") {
             updatedProduct.amount = updatedProduct.qty * updatedProduct.rate;
           }
           return updatedProduct;
@@ -395,62 +417,77 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
   // Calculate totals including gross amount, discount, and taxes
   const calculateTotals = () => {
     const grossAmount = getTotalAmount();
-    const netAmount = grossAmount - totals.discount + totals.tax1 + totals.tax2 + totals.tax3;
+    const netAmount =
+      grossAmount - totals.discount + totals.tax1 + totals.tax2 + totals.tax3;
     return { ...totals, grossAmount, netAmount };
   };
 
   const updateTotals = (field: keyof TotalsData, value: number) => {
     const updatedTotals = { ...totals, [field]: value };
     const grossAmount = getTotalAmount();
-    const netAmount = grossAmount - updatedTotals.discount + updatedTotals.tax1 + updatedTotals.tax2 + updatedTotals.tax3;
+    const netAmount =
+      grossAmount -
+      updatedTotals.discount +
+      updatedTotals.tax1 +
+      updatedTotals.tax2 +
+      updatedTotals.tax3;
     setTotals({ ...updatedTotals, grossAmount, netAmount });
   };
 
   // Update gross amount whenever products change
   useEffect(() => {
     const grossAmount = getTotalAmount();
-    const netAmount = grossAmount - totals.discount + totals.tax1 + totals.tax2 + totals.tax3;
-    setTotals(prev => ({ ...prev, grossAmount, netAmount }));
+    const netAmount =
+      grossAmount - totals.discount + totals.tax1 + totals.tax2 + totals.tax3;
+    setTotals((prev) => ({ ...prev, grossAmount, netAmount }));
   }, [selectedProducts]);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
-      {/* Compact QuickBooks Header */}
-      <div className="bg-white border-b border-[#E1E5E9] px-4 py-3 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <button
+      {/* Professional QuickBooks Header */}
+      <div className="bg-white border-b border-[#E1E5E9] px-6 py-4 shadow-sm">
+        <div className="flex items-center justify-between w-full mx-auto">
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onClose}
-              className="text-[#5A5A5A] hover:text-[#2E2E2E] p-1.5 rounded hover:bg-[#F3F4F6] transition-all duration-200"
+              className="text-[#5A5A5A] hover:text-[#2E2E2E] hover:bg-[#F3F4F6] p-2 rounded-lg transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4" />
-            </button>
-            <div>
-              <h1 className="text-lg font-semibold text-[#2E2E2E]">
-                Create Purchase Order
-              </h1>
-              <p className="text-[#707070] text-xs">
-                Fill in the details below to create a new purchase order
-              </p>
+            </Button>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-[#0077C5] rounded-lg flex items-center justify-center shadow-sm">
+                <ShoppingCart className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-[#2E2E2E] tracking-tight">
+                  Create Purchase Order
+                </h1>
+                <p className="text-[#707070] text-sm">
+                  Build your purchase order with professional precision
+                </p>
+              </div>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <button
+          <div className="flex items-center space-x-3">
+            <Button
+              variant="outline"
               onClick={onClose}
-              className="px-3 py-1.5 text-[#5A5A5A] border border-[#D1D5DB] rounded text-sm hover:bg-[#F9FAFB] transition-all duration-200"
+              className="px-4 py-2 text-[#5A5A5A] border-[#D1D5DB] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-all duration-200"
             >
               Cancel
-            </button>
+            </Button>
             <Button
-            variant="default"
               onClick={form.handleSubmit(handleSavePurchaseOrder)}
               disabled={
                 !form.watch("customer") ||
                 !form.watch("invoice") ||
                 selectedProducts.length === 0
               }
+              className="px-5 py-2 bg-[#0176D3] hover:bg-[#014F86] text-white rounded-lg font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-[#E1E5E9] disabled:text-[#A3A3A3] disabled:cursor-not-allowed disabled:shadow-none"
             >
               Create Order
             </Button>
@@ -487,288 +524,292 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                       </div>
                     </div>
 
-                    {/* Compact Form Content */}
-                    <div className="p-3">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-2.5 mb-3">
-                        {/* Order Date */}
-                        <FormField
-                          control={form.control}
-                          name="orderDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Order date <span className="text-[#D73502]">*</span>
-                              </FormLabel>
-                              <Popover open={open} onOpenChange={setOpen}>
-                                <PopoverTrigger asChild>
-                                  <FormControl>
-                                    <Button
-                                      variant="outline"
-                                      className="w-full bg-white justify-between font-normal h-7 border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] text-xs px-2"
-                                    >
-                                      {field.value
-                                        ? field.value.toLocaleDateString()
-                                        : "Select date"}
-                                      <ChevronDownIcon className="w-3 h-3 text-[#5A5A5A]" />
-                                    </Button>
-                                  </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-auto overflow-hidden p-0 shadow-lg border-[#D1D5DB]"
-                                  align="start"
-                                >
-                                  <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    captionLayout="dropdown"
-                                    onSelect={(date) => {
-                                      field.onChange(date);
-                                      setOpen(false);
-                                    }}
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Supplier */}
-                        <FormField
-                          control={form.control}
-                          name="customer"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Supplier <span className="text-[#D73502]">*</span>
-                              </FormLabel>
-                              <Select
-                                value={field.value}
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                  handleSupplierChange(value);
-                                }}
-                              >
+                    {/* Professional Form Content */}
+                    <div className="p-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-6">
+                      {/* Order Date */}
+                      <FormField
+                        control={form.control}
+                        name="orderDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Order Date{" "}
+                              <span className="text-[#D73502]">*</span>
+                            </FormLabel>
+                            <Popover open={open} onOpenChange={setOpen}>
+                              <PopoverTrigger asChild>
                                 <FormControl>
-                                  <SelectTrigger className="h-7 w-full text-xs border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] bg-white px-2">
-                                    <SelectValue placeholder="Choose..." />
-                                  </SelectTrigger>
+                                  <Button
+                                    variant="outline"
+                                    className="w-full bg-white justify-between font-normal h-10 border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 text-sm transition-all duration-200"
+                                  >
+                                    {field.value
+                                      ? field.value.toLocaleDateString()
+                                      : "Select date"}
+                                    <ChevronDownIcon className="w-4 h-4 text-[#5A5A5A]" />
+                                  </Button>
                                 </FormControl>
-                                <SelectContent className="shadow-lg border-[#D1D5DB]">
-                                  {customers.map((customer) => (
-                                    <SelectItem
-                                      key={customer.id}
-                                      value={customer.id}
-                                      className="hover:bg-[#F3F4F6] text-xs py-1"
-                                    >
-                                      <div className="flex items-center space-x-1.5">
-                                        <div className="w-3 h-3 bg-[#0176D3] rounded-full flex items-center justify-center">
-                                          <span className="text-[10px] font-semibold text-white">
-                                            {customer.name.charAt(0)}
-                                          </span>
-                                        </div>
-                                        <span className="text-xs font-medium">
-                                          {customer.name}
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto overflow-hidden p-0 shadow-xl border-[#D1D5DB]"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  captionLayout="dropdown"
+                                  onSelect={(date) => {
+                                    field.onChange(date);
+                                    setOpen(false);
+                                  }}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Supplier */}
+                      <FormField
+                        control={form.control}
+                        name="customer"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Supplier <span className="text-[#D73502]">*</span>
+                            </FormLabel>
+                            <Select
+                              value={field.value}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                handleSupplierChange(value);
+                              }}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="h-10 w-full text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white transition-all duration-200">
+                                  <SelectValue placeholder="Select supplier..." />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="shadow-xl border-[#D1D5DB]">
+                                {customers.map((customer) => (
+                                  <SelectItem
+                                    key={customer.id}
+                                    value={customer.id}
+                                    className="hover:bg-[#F3F4F6] py-2"
+                                  >
+                                    <div className="flex items-center space-x-3">
+                                      <div className="w-6 h-6 bg-gradient-to-br from-[#0176D3] to-[#014F86] rounded-full flex items-center justify-center">
+                                        <span className="text-xs font-bold text-white">
+                                          {customer.name.charAt(0)}
                                         </span>
                                       </div>
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                      <span className="text-sm font-medium">
+                                        {customer.name}
+                                      </span>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                        {/* Currency */}
-                        <FormField
-                          control={form.control}
-                          name="supplierCurrency"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Currency
-                              </FormLabel>
+                      {/* Currency */}
+                      <FormField
+                        control={form.control}
+                        name="supplierCurrency"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Currency
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  {...field}
+                                  value={field.value || "USD"}
+                                  readOnly
+                                  className="h-10 text-sm bg-[#F8F9FA] cursor-not-allowed border-[#D1D5DB] text-[#5A5A5A] pr-10 font-medium"
+                                />
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center">
+                                  <span className="text-xs text-white font-bold">
+                                    ✓
+                                  </span>
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Invoice */}
+                      <FormField
+                        control={form.control}
+                        name="invoice"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Invoice Number{" "}
+                              <span className="text-[#D73502]">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Enter invoice number..."
+                                className="h-10 text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white transition-all duration-200"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Second Row of Fields */}
+                      {/* Port of Discharge */}
+                      <FormField
+                        control={form.control}
+                        name="portOfDischarge"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Port of Discharge
+                            </FormLabel>
+                            <Select
+                              value={field.value}
+                              onValueChange={field.onChange}
+                            >
                               <FormControl>
-                                <div className="relative">
+                                <SelectTrigger className="h-10 w-full text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white transition-all duration-200">
+                                  <SelectValue placeholder="Select port..." />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="shadow-xl border-[#D1D5DB]">
+                                {destinations.map((destination) => (
+                                  <SelectItem
+                                    key={destination.id}
+                                    value={destination.name}
+                                    className="hover:bg-[#F3F4F6] py-2"
+                                  >
+                                    <span className="text-sm">
+                                      {destination.name} ({destination.code})
+                                    </span>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Destination */}
+                      <FormField
+                        control={form.control}
+                        name="destination"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Final Destination
+                            </FormLabel>
+                            <Select
+                              value={field.value}
+                              onValueChange={field.onChange}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="h-10 w-full text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white transition-all duration-200">
+                                  <SelectValue placeholder="Select destination..." />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="shadow-xl border-[#D1D5DB]">
+                                {destinations.map((destination) => (
+                                  <SelectItem
+                                    key={destination.id}
+                                    value={destination.name}
+                                    className="hover:bg-[#F3F4F6] py-2"
+                                  >
+                                    <span className="text-sm">
+                                      {destination.name} ({destination.code})
+                                    </span>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Reference */}
+                      <FormField
+                        control={form.control}
+                        name="orderReference"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
+                              Order Reference
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Enter reference number..."
+                                className="h-10 text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white transition-all duration-200"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Optional Description */}
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <div className="col-span-full mt-2">
+                            {!showDescription ? (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                type="button"
+                                className="flex items-center text-sm text-[#0176D3] hover:text-[#014F86] hover:bg-[#F3F4F6] px-3 py-2 rounded-lg transition-all duration-200"
+                                onClick={() => setShowDescription(true)}
+                              >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Add Order Notes
+                              </Button>
+                            ) : (
+                              <FormItem>
+                                <div className="flex items-center justify-between mb-2">
+                                  <FormLabel className="text-sm font-semibold text-[#2E2E2E]">
+                                    Order Notes
+                                  </FormLabel>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => setShowDescription(false)}
+                                    className="text-[#DC2626] hover:text-[#B91C1C] hover:bg-[#FEF2F2] p-2 rounded-lg transition-all duration-200"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                                <FormControl>
                                   <Input
                                     {...field}
-                                    value={field.value || "USD"}
-                                    readOnly
-                                    className="h-7 text-xs bg-[#F8F9FA] cursor-not-allowed border-[#D1D5DB] text-[#5A5A5A] pr-6 px-2"
+                                    placeholder="Add notes or special instructions..."
+                                    className="h-10 w-full text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white transition-all duration-200"
                                   />
-                                  <div className="absolute right-1.5 top-1/2 transform -translate-y-1/2 w-2.5 h-2.5 bg-[#10B981] rounded-full flex items-center justify-center">
-                                    <span className="text-[10px] text-white font-bold">✓</span>
-                                  </div>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Invoice */}
-                        <FormField
-                          control={form.control}
-                          name="invoice"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Invoice <span className="text-[#D73502]">*</span>
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder="Enter..."
-                                  className="h-7 text-xs border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] bg-white px-2"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Port of Discharge */}
-                        <FormField
-                          control={form.control}
-                          name="portOfDischarge"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Port of Discharge
-                              </FormLabel>
-                              <Select
-                                value={field.value}
-                                onValueChange={field.onChange}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="h-8 w-full text-xs border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] bg-white">
-                                    <SelectValue placeholder="Select..." />
-                                  </SelectTrigger>
                                 </FormControl>
-                                <SelectContent className="shadow-lg border-[#D1D5DB]">
-                                  {destinations.map((destination) => (
-                                    <SelectItem
-                                      key={destination.id}
-                                      value={destination.name}
-                                      className="hover:bg-[#F3F4F6]"
-                                    >
-                                      <span className="text-xs">
-                                        {destination.name} ({destination.code})
-                                      </span>
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Destination */}
-                        <FormField
-                          control={form.control}
-                          name="destination"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Destination
-                              </FormLabel>
-                              <Select
-                                value={field.value}
-                                onValueChange={field.onChange}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="h-8 w-full text-xs border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] bg-white">
-                                    <SelectValue placeholder="Select..." />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent className="shadow-lg border-[#D1D5DB]">
-                                  {destinations.map((destination) => (
-                                    <SelectItem
-                                      key={destination.id}
-                                      value={destination.name}
-                                      className="hover:bg-[#F3F4F6]"
-                                    >
-                                      <span className="text-xs">
-                                        {destination.name} ({destination.code})
-                                      </span>
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Reference */}
-                        <FormField
-                          control={form.control}
-                          name="orderReference"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-xs font-medium text-[#2E2E2E] mb-1 block">
-                                Reference
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder="Optional..."
-                                  className="h-8 text-xs border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] bg-white"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      {/* Row 2: Description - Compact */}
-                      <div className="mt-3">
-                        {!showDescription ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center text-xs text-[#0176D3] hover:text-[#014F86] hover:bg-[#F3F4F6] p-1.5 rounded h-7"
-                            onClick={() => setShowDescription(true)}
-                          >
-                            <Plus className="w-3 h-3 mr-1" />
-                            Add Note
-                          </Button>
-                        ) : (
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between">
-                              <label className="text-xs font-medium text-[#2E2E2E]">
-                                Note
-                              </label>
-                              <button
-                                type="button"
-                                onClick={() => setShowDescription(false)}
-                                className="text-[#DC2626] text-xs hover:bg-[#FEF2F2] p-1 rounded"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
-                            </div>
-                            <FormField
-                              control={form.control}
-                              name="description"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormControl>
-                                    <Input
-                                      {...field}
-                                      placeholder="Add note..."
-                                      className="h-8 text-xs border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] bg-white w-full"
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                                <FormMessage />
+                              </FormItem>
+                            )}
                           </div>
                         )}
-                      </div>
+                      />
                     </div>
                   </div>
 
@@ -777,17 +818,16 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                     <div className="px-4 py-2.5 border-b border-[#E1E5E9] bg-[#F8F9FA]">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <div className="w-6 h-6 bg-[#059669] rounded flex items-center justify-center">
+                          <div className="w-6 h-6 bg-[#0077C5] rounded flex items-center justify-center">
                             <ShoppingCart className="w-3 h-3 text-white" />
                           </div>
                           <h3 className="text-sm font-semibold text-[#2E2E2E]">
                             Products
                           </h3>
                         </div>
-                        <Button 
+                        <Button
                           type="button"
                           onClick={() => setIsProductDialogOpen(true)}
-                          className="px-3 py-1.5 bg-[#059669] hover:bg-[#047857] text-white rounded text-xs font-medium transition-all duration-200 flex items-center space-x-1"
                         >
                           <Search className="w-3 h-3" />
                           <span>Browse</span>
@@ -804,12 +844,12 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                           No products selected
                         </h4>
                         <p className="text-[#707070] text-xs mb-3 max-w-xs mx-auto">
-                          Start building your purchase order by browsing and selecting products from your inventory.
+                          Start building your purchase order by browsing and
+                          selecting products from your inventory.
                         </p>
-                        <Button 
+                        <Button
                           type="button"
                           onClick={() => setIsProductDialogOpen(true)}
-                          className="px-4 py-1.5 bg-[#059669] hover:bg-[#047857] text-white rounded-lg text-xs font-medium transition-all duration-200 flex items-center space-x-1.5 shadow-sm hover:shadow-md mx-auto"
                         >
                           <Search className="w-3 h-3" />
                           <span>Browse Products</span>
@@ -849,101 +889,141 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                           </thead>
                           <tbody>
                             {selectedProducts.map((product, index) => (
-                              <tr 
-                                key={product.id} 
+                              <tr
+                                key={product.id}
                                 className={`border-b border-[#E1E5E9] hover:bg-[#F8F9FA] transition-colors duration-200 ${
-                                  index % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFC]'
+                                  index % 2 === 0 ? "bg-white" : "bg-[#FAFBFC]"
                                 }`}
                               >
                                 {/* Item Code */}
                                 <td className="py-4 px-4">
-                                  <span className="text-sm font-medium text-[#2E2E2E] block truncate" title={product.itemCode}>
+                                  <span
+                                    className="text-sm font-medium text-[#2E2E2E] block truncate"
+                                    title={product.itemCode}
+                                  >
                                     {product.itemCode}
                                   </span>
                                 </td>
-                                
+
                                 {/* Design Code */}
                                 <td className="py-4 px-4">
-                                  <span className="text-sm text-[#707070] block truncate" title={product.designCode}>
+                                  <span
+                                    className="text-sm text-[#707070] block truncate"
+                                    title={product.designCode}
+                                  >
                                     {product.designCode}
                                   </span>
                                 </td>
-                                
+
                                 {/* Product Name */}
                                 <td className="py-4 px-4">
                                   <div className="flex items-center space-x-3">
                                     <div className="w-10 h-10 bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] rounded-lg border border-[#D1D5DB] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                      <img 
-                                        src={product.image} 
+                                      <img
+                                        src={product.image}
                                         alt={product.name}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
-                                          e.currentTarget.style.display = 'none';
-                                          const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                                          e.currentTarget.style.display =
+                                            "none";
+                                          const nextElement = e.currentTarget
+                                            .nextElementSibling as HTMLElement;
                                           if (nextElement) {
-                                            nextElement.style.display = 'block';
+                                            nextElement.style.display = "block";
                                           }
                                         }}
                                       />
                                       <Package className="w-5 h-5 text-[#9CA3AF] hidden" />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                      <span className="text-sm font-medium text-[#2E2E2E] block truncate" title={product.name}>
+                                      <span
+                                        className="text-sm font-medium text-[#2E2E2E] block truncate"
+                                        title={product.name}
+                                      >
                                         {product.name}
                                       </span>
-                                      <span className="text-xs text-[#707070] block truncate" title={product.designNo}>
+                                      <span
+                                        className="text-xs text-[#707070] block truncate"
+                                        title={product.designNo}
+                                      >
                                         Design: {product.designNo}
                                       </span>
                                     </div>
                                   </div>
                                 </td>
-                                
+
                                 {/* UOM Select */}
                                 <td className="py-4 px-4">
                                   <Select
                                     value={product.uom}
-                                    onValueChange={(value) => updateProductDetails(product.id, 'uom', value)}
+                                    onValueChange={(value) =>
+                                      updateProductDetails(
+                                        product.id,
+                                        "uom",
+                                        value
+                                      )
+                                    }
                                   >
                                     <SelectTrigger className="h-9 w-full text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 bg-white">
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className="shadow-lg border-[#D1D5DB]">
                                       {uomOptions.map((uom) => (
-                                        <SelectItem key={uom.value} value={uom.value} className="hover:bg-[#F3F4F6] focus:bg-[#F3F4F6]">
-                                          <span className="text-sm">{uom.label}</span>
+                                        <SelectItem
+                                          key={uom.value}
+                                          value={uom.value}
+                                          className="hover:bg-[#F3F4F6] focus:bg-[#F3F4F6]"
+                                        >
+                                          <span className="text-sm">
+                                            {uom.label}
+                                          </span>
                                         </SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
                                 </td>
-                                
+
                                 {/* Quantity Input */}
                                 <td className="py-4 px-4">
                                   <Input
                                     type="number"
                                     value={product.qty}
-                                    onChange={(e) => updateProductDetails(product.id, 'qty', parseFloat(e.target.value) || 0)}
+                                    onChange={(e) =>
+                                      updateProductDetails(
+                                        product.id,
+                                        "qty",
+                                        parseFloat(e.target.value) || 0
+                                      )
+                                    }
                                     className="h-9 text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 text-center bg-white font-medium"
                                     min="0"
                                     step="0.01"
                                   />
                                 </td>
-                                
+
                                 {/* Rate Input */}
                                 <td className="py-4 px-4">
                                   <div className="relative">
-                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#707070] font-medium">$</span>
+                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#707070] font-medium">
+                                      $
+                                    </span>
                                     <Input
                                       type="number"
                                       value={product.rate}
-                                      onChange={(e) => updateProductDetails(product.id, 'rate', parseFloat(e.target.value) || 0)}
+                                      onChange={(e) =>
+                                        updateProductDetails(
+                                          product.id,
+                                          "rate",
+                                          parseFloat(e.target.value) || 0
+                                        )
+                                      }
                                       className="h-9 text-sm border-[#D1D5DB] hover:border-[#9CA3AF] focus:border-[#0176D3] focus:ring-2 focus:ring-[#0176D3]/20 text-right bg-white pl-8 font-medium"
                                       min="0"
                                       step="0.01"
                                     />
                                   </div>
                                 </td>
-                                
+
                                 {/* Amount Display */}
                                 <td className="py-4 px-4">
                                   <div className="text-right">
@@ -952,12 +1032,14 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                     </span>
                                   </div>
                                 </td>
-                                
+
                                 {/* Remove Button */}
                                 <td className="py-4 px-4 text-center">
                                   <button
                                     type="button"
-                                    onClick={() => removeSelectedProduct(product.id)}
+                                    onClick={() =>
+                                      removeSelectedProduct(product.id)
+                                    }
                                     className="text-[#9CA3AF] hover:text-[#DC2626] hover:bg-[#FEF2F2] p-2 rounded-lg transition-all duration-200 group"
                                     title="Remove product"
                                   >
@@ -968,30 +1050,6 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                             ))}
                           </tbody>
                         </table>
-
-                        {/* Enhanced Summary Row */}
-                        <div className="bg-gradient-to-r from-[#F8F9FA] to-white border-t border-[#E1E5E9] px-6 py-4">
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center space-x-6">
-                              <div className="text-sm text-[#5A5A5A]">
-                                <span className="font-medium">Total Items:</span>
-                                <span className="ml-2 font-semibold text-[#2E2E2E]">{selectedProducts.length}</span>
-                              </div>
-                              <div className="text-sm text-[#5A5A5A]">
-                                <span className="font-medium">Total Quantity:</span>
-                                <span className="ml-2 font-semibold text-[#2E2E2E]">
-                                  {selectedProducts.reduce((sum, p) => sum + p.qty, 0).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-sm text-[#5A5A5A] mb-1">Subtotal</div>
-                              <div className="text-xl font-bold text-[#2E2E2E]">
-                                ${getTotalAmount().toFixed(2)}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     )}
                   </div>
@@ -1007,8 +1065,8 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                           </h3>
                         </div>
                       </div>
-                      
-                      <div className="p-4">
+
+                      <div className="p-2">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Left Column - Calculations */}
                           <div className="space-y-3">
@@ -1019,7 +1077,9 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                               </label>
                               <Input
                                 type="text"
-                                value={`$${calculateTotals().grossAmount.toFixed(2)}`}
+                                value={`$${calculateTotals().grossAmount.toFixed(
+                                  2
+                                )}`}
                                 readOnly
                                 className="h-9 text-sm bg-[#F6F7F9] cursor-not-allowed border-[#E3E5E8] text-[#6B7C93] text-right font-semibold"
                               />
@@ -1031,11 +1091,18 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                 Discount
                               </label>
                               <div className="relative">
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">$</span>
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">
+                                  $
+                                </span>
                                 <Input
                                   type="number"
                                   value={totals.discount}
-                                  onChange={(e) => updateTotals('discount', parseFloat(e.target.value) || 0)}
+                                  onChange={(e) =>
+                                    updateTotals(
+                                      "discount",
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className="h-9 text-sm border-[#E3E5E8] focus:border-[#0077C5] pl-6 text-right"
                                   min="0"
                                   step="0.01"
@@ -1050,11 +1117,18 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                 Tax 1
                               </label>
                               <div className="relative">
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">$</span>
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">
+                                  $
+                                </span>
                                 <Input
                                   type="number"
                                   value={totals.tax1}
-                                  onChange={(e) => updateTotals('tax1', parseFloat(e.target.value) || 0)}
+                                  onChange={(e) =>
+                                    updateTotals(
+                                      "tax1",
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className="h-9 text-sm border-[#E3E5E8] focus:border-[#0077C5] pl-6 text-right"
                                   min="0"
                                   step="0.01"
@@ -1069,11 +1143,18 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                 Tax 2
                               </label>
                               <div className="relative">
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">$</span>
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">
+                                  $
+                                </span>
                                 <Input
                                   type="number"
                                   value={totals.tax2}
-                                  onChange={(e) => updateTotals('tax2', parseFloat(e.target.value) || 0)}
+                                  onChange={(e) =>
+                                    updateTotals(
+                                      "tax2",
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className="h-9 text-sm border-[#E3E5E8] focus:border-[#0077C5] pl-6 text-right"
                                   min="0"
                                   step="0.01"
@@ -1088,11 +1169,18 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                 Tax 3
                               </label>
                               <div className="relative">
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">$</span>
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm text-[#6B7C93]">
+                                  $
+                                </span>
                                 <Input
                                   type="number"
                                   value={totals.tax3}
-                                  onChange={(e) => updateTotals('tax3', parseFloat(e.target.value) || 0)}
+                                  onChange={(e) =>
+                                    updateTotals(
+                                      "tax3",
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className="h-9 text-sm border-[#E3E5E8] focus:border-[#0077C5] pl-6 text-right"
                                   min="0"
                                   step="0.01"
@@ -1105,16 +1193,20 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                           {/* Right Column - Net Amount Summary */}
                           <div className="bg-[#F6F7F9] rounded-lg p-4 border border-[#E3E5E8]">
                             <div className="text-center">
-                              <p className="text-sm font-medium text-[#6B7C93] mb-2">Net Amount</p>
+                              <p className="text-sm font-medium text-[#6B7C93] mb-2">
+                                Net Amount
+                              </p>
                               <div className="text-2xl font-bold text-[#2CA01C] mb-4">
                                 ${calculateTotals().netAmount.toFixed(2)}
                               </div>
-                              
+
                               {/* Calculation Breakdown */}
                               <div className="text-xs text-[#6B7C93] space-y-1">
                                 <div className="flex justify-between">
                                   <span>Gross Amount:</span>
-                                  <span>${calculateTotals().grossAmount.toFixed(2)}</span>
+                                  <span>
+                                    ${calculateTotals().grossAmount.toFixed(2)}
+                                  </span>
                                 </div>
                                 {totals.discount > 0 && (
                                   <div className="flex justify-between text-[#DE3618]">
@@ -1122,16 +1214,27 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                     <span>-${totals.discount.toFixed(2)}</span>
                                   </div>
                                 )}
-                                {(totals.tax1 > 0 || totals.tax2 > 0 || totals.tax3 > 0) && (
+                                {(totals.tax1 > 0 ||
+                                  totals.tax2 > 0 ||
+                                  totals.tax3 > 0) && (
                                   <div className="flex justify-between text-[#0077C5]">
                                     <span>Total Taxes:</span>
-                                    <span>+${(totals.tax1 + totals.tax2 + totals.tax3).toFixed(2)}</span>
+                                    <span>
+                                      +$
+                                      {(
+                                        totals.tax1 +
+                                        totals.tax2 +
+                                        totals.tax3
+                                      ).toFixed(2)}
+                                    </span>
                                   </div>
                                 )}
                                 <div className="border-t border-[#E3E5E8] pt-2 mt-2">
                                   <div className="flex justify-between font-semibold text-sm text-[#393A3D]">
                                     <span>Net Amount:</span>
-                                    <span>${calculateTotals().netAmount.toFixed(2)}</span>
+                                    <span>
+                                      ${calculateTotals().netAmount.toFixed(2)}
+                                    </span>
                                   </div>
                                 </div>
                               </div>
@@ -1150,6 +1253,8 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                     availableProducts={availableProducts}
                     selectedProductIds={selectedProductIds}
                     onProductSelection={handleProductSelection}
+                    itemTypes={itemTypes}
+                    categories={categories}
                   />
                 </div>
               </form>
