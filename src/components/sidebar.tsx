@@ -87,7 +87,7 @@ export function Sidebar({
         {
           id: "Company Profile",
           label: "Company Profile",
-          href: "/company-profile",
+          href: "/setup/company-profile",
           icon: <Building2 className="w-3 h-3" />,
         },
           // ITEM SETUP
