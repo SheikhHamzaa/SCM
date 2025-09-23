@@ -112,7 +112,6 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
   triggerButton,
 }) => {
   const uomOptions = ["pcs", "pkt", "bail"];
-  const destination = ["Mozambique", "Zambia"];
   const itemType = ["Polyster", "Cotton"];
   const itemCategory = ["A quality", "B quality", "C quality"];
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -476,40 +475,7 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="finalDestination"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-medium text-[#393A3D] mb-1 block">
-                            Final Destination *
-                          </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="border-[#D1D5DB] focus:border-[#0077C5] focus:ring-1 focus:ring-[#0077C5] text-xs h-8 md:w-[18vw] w-[40vw] bg-white transition-all duration-200">
-                                <SelectValue placeholder="Select destination" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {destination.map((option) => (
-                                <SelectItem key={option} value={option}>
-                                  {option}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage className="text-red-600 text-xs mt-1" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* Category & Classification Section */}
-                <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <FormField
+<FormField
                       control={form.control}
                       name="itemType"
                       render={({ field }) => (
@@ -535,7 +501,13 @@ const ProductDrawer: React.FC<ProductDrawerProps> = ({
                         </FormItem>
                       )}
                     />
+                    
+                  </div>
+                </div>
 
+                {/* Category & Classification Section */}
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <FormField
                       control={form.control}
                       name="itemCategory"

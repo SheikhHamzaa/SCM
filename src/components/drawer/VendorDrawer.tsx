@@ -33,6 +33,7 @@ import { Plus } from "lucide-react";
 
 const vendorFormSchema = z.object({
   currency: z.string().min(1, "Currency is required"),
+  venType: z.string().min(1, "Vendor type is required"), 
   vendorCode: z
     .string()
     .min(1, "Vendor code is required")
@@ -143,17 +144,15 @@ const VendorDrawer: React.FC<VendorDrawerProps> = ({
   // Common currencies for the select dropdown
   const commonCurrencies = [
     { code: "USD", name: "US Dollar", symbol: "$" },
-    { code: "EUR", name: "Euro", symbol: "€" },
-    { code: "GBP", name: "British Pound", symbol: "£" },
-    { code: "JPY", name: "Japanese Yen", symbol: "¥" },
-    { code: "CAD", name: "Canadian Dollar", symbol: "C$" },
-    { code: "AUD", name: "Australian Dollar", symbol: "A$" },
-    { code: "CHF", name: "Swiss Franc", symbol: "CHF" },
-    { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
+    { code: "PKR", name: "Pakistani Rupee", symbol: "PKR" },
+    { code: "ZMW", name: "Zambian Kwacha", symbol: "ZMW" },
+    { code: "MZN", name: "Mozambican Metical", symbol: "MT" },
     { code: "INR", name: "Indian Rupee", symbol: "₹" },
-    { code: "BDT", name: "Bangladeshi Taka", symbol: "৳" },
   ];
-
+const vendorTypes = [
+    { code: "Trade", name: "Trade" },
+    { code: "No Trade", name: "No Trade" },
+  ];
   const onSubmit = (data: VendorFormValues) => {
     onSave(data);
     form.reset();
@@ -185,9 +184,7 @@ const VendorDrawer: React.FC<VendorDrawerProps> = ({
               {editingVendor ? "Edit Vendor" : "Vendor Information"}
             </DrawerTitle>
             <DrawerDescription className="text-xs text-gray-600">
-              {editingVendor
-                ? "Update vendor details"
-                : "Enter vendor details"}
+              {editingVendor ? "Update vendor details" : "Enter vendor details"}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -212,7 +209,7 @@ const VendorDrawer: React.FC<VendorDrawerProps> = ({
                       >
                         <FormControl>
                           <SelectTrigger
-                            className={`border-gray-300 focus:border-[#0077C5] focus:ring-[#0077C5] text-sm h-8 ${
+                            className={`border-gray-300 w-full focus:border-[#0077C5] focus:ring-[#0077C5] text-sm h-8 ${
                               form.formState.errors.currency
                                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                                 : ""
@@ -233,6 +230,7 @@ const VendorDrawer: React.FC<VendorDrawerProps> = ({
                     </FormItem>
                   )}
                 />
+                
 
                 {/* Basic Information */}
                 <div className="grid grid-cols-2 gap-2">
@@ -309,6 +307,35 @@ const VendorDrawer: React.FC<VendorDrawerProps> = ({
                       </FormItem>
                     )}
                   />
+                  <FormField
+                  control={form.control}
+                  name="venType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-medium text-[#393A3D] mb-1 block">
+                        Vendor Type *
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="border-[#D1D5DB] focus:border-[#0077C5] focus:ring-1 focus:ring-[#0077C5] text-xs h-8 md:w-[18vw] w-[40vw] bg-white transition-all duration-200">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {vendorTypes.map((option) => (
+                            <SelectItem key={option.code} value={option.code}>
+                              {option.name }
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-red-600 text-xs mt-1" />
+                    </FormItem>
+                  )}
+                />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <FormField
