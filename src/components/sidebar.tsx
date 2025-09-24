@@ -25,6 +25,7 @@ import {
   Currency,
   CurrencyIcon,
   Ship,
+  ContainerIcon,
 } from "lucide-react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import { TbBasket, TbDashboard } from "react-icons/tb";
@@ -216,6 +217,12 @@ export function Sidebar({
                   label: "Purchase Order",
                   href: "/entry/scm/purchase/purchase-order",
                   icon: <Book className="w-3 h-3" />,
+                },
+                {
+                  id: "in-transit",
+                  label: "In Transit",
+                  href: "/entry/scm/purchase/in-transit",
+                  icon: <ContainerIcon className="w-3 h-3" />,
                 },
                 {
                   id: "goods-receipt",

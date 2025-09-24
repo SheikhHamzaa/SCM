@@ -196,7 +196,7 @@ const PurchaseOrder = () => {
                           No purchase orders found
                         </p>
                         <p className="text-[#C1C7CD] text-xs mt-1">
-                          Click "Create Order" to add your first order
+                          Click &quot;Create Order&quot; to add your first order
                         </p>
                       </div>
                     </td>

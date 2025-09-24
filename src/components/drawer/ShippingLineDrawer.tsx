@@ -59,7 +59,7 @@ interface shippingLineDrawerProps {
   triggerButton?: React.ReactNode;
 }
 
-const shippingLineDrawer: React.FC<shippingLineDrawerProps> = ({
+const ShippingLineDrawer: React.FC<shippingLineDrawerProps> = ({
   isDrawerOpen,
   setIsDrawerOpen,
   onSave,
@@ -239,4 +239,4 @@ const shippingLineDrawer: React.FC<shippingLineDrawerProps> = ({
   );
 };
 
-export default shippingLineDrawer;
+export default ShippingLineDrawer;

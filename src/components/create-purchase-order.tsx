@@ -330,7 +330,7 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
   const updateProductDetails = (
     productId: string,
     field: keyof ProductWithOrderDetails,
-    value: any
+    value: string | number
   ) => {
     setSelectedProducts((prev) =>
       prev.map((product) => {
@@ -676,7 +676,7 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
-                              Port of Discharge
+                              Port of Discharge *
                             </FormLabel>
                             <Select
                               value={field.value}
@@ -713,7 +713,7 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-sm font-semibold text-[#2E2E2E] mb-2 block">
-                              Final Destination
+                              Final Destination *
                             </FormLabel>
                             <Select
                               value={field.value}
@@ -779,13 +779,13 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
                                 onClick={() => setShowDescription(true)}
                               >
                                 <Plus className="w-4 h-4 mr-2" />
-                                Add Order Notes
+                                Add Notes
                               </Button>
                             ) : (
                               <FormItem>
                                 <div className="flex items-center justify-between mb-2">
                                   <FormLabel className="text-sm font-semibold text-[#2E2E2E]">
-                                    Order Notes
+                                   Notes
                                   </FormLabel>
                                   <Button
                                     variant="ghost"
