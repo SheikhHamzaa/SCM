@@ -1,10 +1,10 @@
-import PurchaseOrder from '@/components/purchase-order'
+import InTransit from '@/components/in-transit'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        <PurchaseOrder />
+        <InTransit />
     </div>
   )
 }

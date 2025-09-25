@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id} className="bg-[#F6F7F9] border-b border-[#E3E5E8] hover:bg-[#F6F7F9]">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-left py-3 px-4 text-xs font-semibold text-[#393A3D]">
+                    <TableHead key={header.id} className="text-left py-2 px-4 text-xs font-semibold text-[#393A3D]">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
                   className="border-b border-[#F6F7F9] hover:bg-[#FAFBFC] cursor-pointer data-[state=selected]:bg-[#EBF4FA]"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3 px-4">
+                    <TableCell key={cell.id} className="py-1 px-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
