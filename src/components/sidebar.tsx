@@ -225,6 +225,12 @@ export function Sidebar({
                   icon: <ContainerIcon className="w-3 h-3" />,
                 },
                 {
+                  id: "telex-status",
+                  label: "Telex Status",
+                  href: "/entry/scm/purchase/telex-status",
+                  icon: <ContainerIcon className="w-3 h-3" />,
+                },
+                {
                   id: "goods-receipt",
                   label: "Goods Receipt",
                   href: "/goods-receipt",
