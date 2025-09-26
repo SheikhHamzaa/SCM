@@ -451,9 +451,10 @@ const TelexStatus = () => {
         </div>
       </div>
       {/* Compact Data Table */}
-      <div className="bg-white rounded-lg border border-[#E1E5E9] shadow-sm overflow-hidden">
-        <div className="border-b border-[#E1E5E9] px-4 py-1 bg-gradient-to-r from-[#F8F9FA] to-white"></div>
-        <div className="p-4">
+      <div className="mx-4 mt-4">
+        <div className="bg-white rounded-lg border border-[#E1E5E9] shadow-sm overflow-hidden">
+          <div className="border-b border-[#E1E5E9] px-4 py-1 bg-gradient-to-r from-[#F8F9FA] to-white"></div>
+          <div className="p-4">
           {PO.length === 0 ? (
             <div className="text-center py-8">
               <Package className="w-12 h-12 text-[#C1C7CD] mb-2 mx-auto" />
@@ -465,8 +466,17 @@ const TelexStatus = () => {
               </p>
             </div>
           ) : (
-            <DataTable columns={columns} data={PO} />
+            <DataTable 
+              columns={columns} 
+              data={PO} 
+              stickyColumnIds={["telexStatus", "actions"]}
+              stickyColumnWidths={{
+                telexStatus: 150,
+                actions: 90
+              }}
+            />
           )}
+          </div>
         </div>
       </div>
     </div>
