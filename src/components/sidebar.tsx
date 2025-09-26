@@ -26,6 +26,7 @@ import {
   CurrencyIcon,
   Ship,
   ContainerIcon,
+  DockIcon,
 } from "lucide-react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import { TbBasket, TbDashboard } from "react-icons/tb";
@@ -228,7 +229,7 @@ export function Sidebar({
                   id: "telex-status",
                   label: "Telex Status",
                   href: "/entry/scm/purchase/telex-status",
-                  icon: <ContainerIcon className="w-3 h-3" />,
+                  icon: <DockIcon className="w-3 h-3" />,
                 },
                 {
                   id: "goods-receipt",

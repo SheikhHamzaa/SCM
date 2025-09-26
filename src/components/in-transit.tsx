@@ -44,6 +44,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import ShipmentDetailsForm from "./ShipmentDetailsForm";
 
 // Form validation schema
 const formSchema = z.object({
@@ -254,7 +255,7 @@ const InTransit = () => {
         const items = row.original.items;
         return (
           <div className="text-xs font-medium text-[#2E2E2E] text-center">
-            {items.length} item{items.length > 1 ? 's' : ''}
+            {items.length} item{items.length > 1 ? "s" : ""}
           </div>
         );
       },
@@ -303,15 +304,19 @@ const InTransit = () => {
       accessorKey: "image",
       header: "",
       cell: ({ row }) => (
-        <div className="w-8 h-8 bg-[#F8F9FA] rounded flex items-center justify-center border border-[#E1E5E9] cursor-pointer hover:border-[#0176D3] transition-colors" onClick={() => setExpandedImage(row.getValue("image"))}>
-          <img 
-            src={row.getValue("image")} 
-            alt="Product" 
-            className="w-7 h-7 object-cover rounded"
+        <div
+          className="w-4 h-4 bg-[#F8F9FA] rounded flex items-center justify-center border border-[#E1E5E9] cursor-pointer hover:border-[#0176D3] transition-colors"
+          onClick={() => setExpandedImage(row.getValue("image"))}
+        >
+          <img
+            src={row.getValue("image")}
+            alt="Product"
+            className="w-4 h-4 object-cover rounded"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              target.parentElement!.innerHTML = '<div class="w-6 h-6 text-[#707070]"><svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
+              target.style.display = "none";
+              target.parentElement!.innerHTML =
+                '<div class="w-6 h-6 text-[#707070]"><svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
             }}
           />
         </div>
@@ -351,7 +356,7 @@ const InTransit = () => {
       accessorKey: "totalQtyPcs",
       header: "QTY (PCS)",
       cell: ({ row }) => (
-        <div className="text-xs font-medium text-[#2E2E2E] text-right">
+        <div className="text-xs font-medium text-[#2E2E2E] text-center">
           {(row.getValue("totalQtyPcs") as number).toLocaleString()}
         </div>
       ),
@@ -469,6 +474,117 @@ const InTransit = () => {
         ],
         totalValue: 200000,
         totalQuantityPcs: 2000,
+      },
+      {
+        id: "PO-004",
+        destination: "Dubai Hub",
+        orderDate: "2024-02-15",
+        orderReference: "PO-2024-004",
+        supplier: "Emirates Fabrics LLC",
+        portOfDischarge: "Karachi",
+        status: "Pending",
+        items: [
+          {
+            id: "ITEM-006",
+            itemName: "Cotton Fabric",
+            designNo: "CF-2024-004",
+            image: "/products/p6.jpg",
+            baleQty: 20,
+            pcsPerBale: 80,
+            totalQtyPcs: 1600,
+            totalYards: 12000,
+            ratePerYard: 8.5,
+            value: 102000,
+          },
+          {
+            id: "ITEM-007",
+            itemName: "Cotton Premium",
+            designNo: "CP-2024-004",
+            image: "/products/p7.jpg",
+            baleQty: 10,
+            pcsPerBale: 90,
+            totalQtyPcs: 900,
+            totalYards: 7200,
+            ratePerYard: 9.0,
+            value: 64800,
+          },
+        ],
+        totalValue: 166800,
+        totalQuantityPcs: 2500,
+      },
+      {
+        id: "PO-005",
+        destination: "UK Warehouse",
+        orderDate: "2024-03-05",
+        orderReference: "PO-2024-005",
+        supplier: "British Textiles Ltd",
+        portOfDischarge: "Port Qasim",
+        status: "Pending",
+        items: [
+          {
+            id: "ITEM-008",
+            itemName: "Linen Classic",
+            designNo: "LC-2024-005",
+            image: "/products/p8.jpg",
+            baleQty: 12,
+            pcsPerBale: 70,
+            totalQtyPcs: 840,
+            totalYards: 5600,
+            ratePerYard: 12.0,
+            value: 67200,
+          },
+          {
+            id: "ITEM-009",
+            itemName: "Linen Premium",
+            designNo: "LP-2024-005",
+            image: "/products/p9.jpg",
+            baleQty: 8,
+            pcsPerBale: 75,
+            totalQtyPcs: 600,
+            totalYards: 4500,
+            ratePerYard: 12.5,
+            value: 56250,
+          },
+        ],
+        totalValue: 123450,
+        totalQuantityPcs: 1440,
+      },
+      {
+        id: "PO-006",
+        destination: "New York Hub",
+        orderDate: "2024-04-10",
+        orderReference: "PO-2024-006",
+        supplier: "American Fabrics Co",
+        portOfDischarge: "Karachi",
+        status: "Pending",
+        items: [
+          {
+            id: "ITEM-010",
+            itemName: "Polyester Standard",
+            designNo: "PS-2024-006",
+            image: "/products/p10.jpg",
+            baleQty: 18,
+            pcsPerBale: 110,
+            totalQtyPcs: 1980,
+            totalYards: 15840,
+            ratePerYard: 7.5,
+            value: 118800,
+          },
+          {
+            id: "ITEM-011",
+            itemName: "Polyester Premium",
+            designNo: "PP-2024-006",
+            image: "/products/p11.jpg",
+            baleQty: 7,
+            pcsPerBale: 120,
+            totalQtyPcs: 840,
+            totalYards: 6720,
+            ratePerYard: 8.0,
+            value: 53760,
+          },
+        ],
+        totalValue: 172560,
+        totalQuantityPcs: 2820,
       },
     ];
 
@@ -598,7 +714,7 @@ const InTransit = () => {
               <Truck className="w-3.5 h-3.5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-[#2E2E2E] tracking-tight">
+              <h1 className="text-lg font-bold text-[#2E2E2E] tracking-tight">
                 In Transit Management
               </h1>
               <p className="text-[#707070] text-[10px] -mt-0.5">
@@ -640,26 +756,25 @@ const InTransit = () => {
                   )}
                 </div>
               </div>
-
             </div>
-              {/* Search Input */}
-              <div className="relative mt-1.5">
-                <Search className="absolute md:left-6 left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-[#707070]" />
-                <Input
-                  placeholder="Search by order, supplier, destination, or item..."
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                  className="pl-8 h-7 text-xs w-[300px] md:w-[800px] mx-auto border-[#E1E5E9] focus:border-[#000000] focus:ring-1 focus:ring-[#0176D3] transition-all duration-200"
-                />
-                {globalFilter && (
-                  <button
-                    onClick={() => setGlobalFilter("")}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-[#707070] hover:text-[#2E2E2E] transition-colors"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
+            {/* Search Input */}
+            <div className="relative mt-1.5">
+              <Search className="absolute md:left-6 left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 text-[#707070]" />
+              <Input
+                placeholder="Search by order, supplier, destination, or item..."
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                className="pl-8 h-7 text-xs w-[300px] md:w-[800px] mx-auto border-[#E1E5E9] focus:border-[#000000] focus:ring-1 focus:ring-[#0176D3] transition-all duration-200"
+              />
+              {globalFilter && (
+                <button
+                  onClick={() => setGlobalFilter("")}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-[#707070] hover:text-[#2E2E2E] transition-colors"
+                >
+                  ×
+                </button>
+              )}
+            </div>
 
             <div className="p-2">
               <div className="rounded-lg border border-[#E3E5E8] overflow-auto">
@@ -718,7 +833,7 @@ const InTransit = () => {
                             }}
                           >
                             {columns.map((column, colIndex) => (
-                              <td key={colIndex} className="py-2 px-3">
+                              <td key={colIndex} className="py-1 px-3">
                                 {typeof column.cell === "function"
                                   ? column.cell({
                                       row: {
@@ -889,321 +1004,13 @@ const InTransit = () => {
                   </div>
 
                   {/* Shipping Form */}
-                  <div className="bg-white rounded-md border border-[#E1E5E9] shadow-sm animate-in slide-in-from-top-6 duration-700">
-                    <div className="px-2.5 py-1.5 border-b border-[#E1E5E9] bg-[#FAFBFC]">
-                      <h3 className="text-xs font-semibold text-[#2E2E2E] uppercase tracking-wide">
-                        Shipping Information
-                      </h3>
-                    </div>
-                    <div className="p-2.5">
-                      <Form {...form}>
-                        <form
-                          onSubmit={form.handleSubmit(onSubmit)}
-                          className="space-y-2.5"
-                        >
-                          {/* User Input Fields */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                            <FormField
-                              control={form.control}
-                              name="shippingLineId"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Shipping Line{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger className="!h-7 w-full md:w-45 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1">
-                                        <SelectValue placeholder="Select shipping line" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {shippingLines.map((line) => (
-                                        <SelectItem
-                                          key={line.id}
-                                          value={line.id}
-                                        >
-                                          <div className="flex items-center space-x-2">
-                                            <span className="font-medium text-xs">
-                                              {line.code}
-                                            </span>
-                                            <span className="text-gray-500 text-xs">
-                                              - {line.title}
-                                            </span>
-                                          </div>
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="invoiceNo"
-                              render={({ field }) => (
-                                <FormItem className="">
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Invoice Number{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="Enter invoice number"
-                                      {...field}
-                                      className="h-7 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1 placeholder:text-[#999]"
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="consigneeId"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Consignee{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger className="!h-7 w-full md:w-45 lg:w-45 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1">
-                                        <SelectValue placeholder="Select consignee" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {consignees.map((consignee) => (
-                                        <SelectItem
-                                          key={consignee.id}
-                                          value={consignee.id}
-                                        >
-                                          <div className="flex items-center space-x-2">
-                                            <span className="font-medium text-xs">
-                                              {consignee.code}
-                                            </span>
-                                            <span className="text-gray-500 text-xs">
-                                              - {consignee.title}
-                                            </span>
-                                          </div>
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="containerType"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Container Type{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="e.g. 20ft, 40ft, 40ft HC"
-                                      {...field}
-                                      className="h-7 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1 placeholder:text-[#999]"
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="containerNo"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Container No{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="e.g. MSKU1234567"
-                                      {...field}
-                                      className="h-7 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1 placeholder:text-[#999]"
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="billOfLading"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Bill of Lading{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="Enter B/L number"
-                                      {...field}
-                                      className="h-7 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1 placeholder:text-[#999]"
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="eta"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    ETA <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <FormControl>
-                                        <Button
-                                          variant={"outline"}
-                                          className={cn(
-                                            "h-7 text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1 w-full justify-start text-left font-normal",
-                                            !field.value && "text-[#999]"
-                                          )}
-                                        >
-                                          <CalendarDays className="mr-2 h-3 w-3" />
-                                          {field.value ? (
-                                            format(field.value, "PPP")
-                                          ) : (
-                                            <span>Select ETA date</span>
-                                          )}
-                                        </Button>
-                                      </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent
-                                      className="w-auto p-0"
-                                      align="start"
-                                    >
-                                      <Calendar
-                                        mode="single"
-                                        captionLayout="dropdown"
-                                        selected={field.value}
-                                        onSelect={field.onChange}
-                                        disabled={(date) => date < new Date()}
-                                        initialFocus
-                                      />
-                                    </PopoverContent>
-                                  </Popover>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name="shipmentStatus"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-xs font-medium text-[#2E2E2E]">
-                                    Status{" "}
-                                    <span className="text-red-500">*</span>
-                                  </FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger className="!h-7 w-full text-xs border-[#E1E5E9] focus:border-[#0176D3] focus:ring-1">
-                                        <SelectValue placeholder="Select status" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {[
-                                        {
-                                          value: "In Transit",
-                                          icon: Truck,
-                                          color: "text-blue-500",
-                                        },
-                                        {
-                                          value: "Port",
-                                          icon: Ship,
-                                          color: "text-cyan-500",
-                                        },
-                                        {
-                                          value: "Border",
-                                          icon: Package,
-                                          color: "text-orange-500",
-                                        },
-                                        {
-                                          value: "Off load",
-                                          icon: CheckCircle,
-                                          color: "text-purple-500",
-                                        },
-                                      ].map((status) => (
-                                        <SelectItem
-                                          key={status.value}
-                                          value={status.value}
-                                        >
-                                          <div className="flex items-center space-x-2">
-                                            <status.icon
-                                              className={`w-3 h-3 ${status.color}`}
-                                            />
-                                            <span className="text-xs">
-                                              {status.value}
-                                            </span>
-                                          </div>
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-
-                          {/* Submit Button */}
-                          <div className="pt-2.5 border-t border-[#E1E5E9] mt-3">
-                            <Button
-                              type="submit"
-                              disabled={isLoading}
-                              className={`w-full h-8 bg-[#0176D3] hover:bg-[#014F86] text-white font-medium text-sm rounded-md transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 ${
-                                isLoading
-                                  ? "animate-pulse"
-                                  : "hover:scale-[1.02]"
-                              }`}
-                            >
-                              {isLoading ? (
-                                <div className="flex items-center space-x-2">
-                                  <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                  <span>Processing...</span>
-                                </div>
-                              ) : (
-                                <div className="flex items-center space-x-2">
-                                  <Ship className="w-3.5 h-3.5" />
-                                  <span>Update Shipment Status</span>
-                                </div>
-                              )}
-                            </Button>
-                          </div>
-                        </form>
-                      </Form>
-                    </div>
-                  </div>
+                  <ShipmentDetailsForm
+                    form={form}
+                    shippingLines={shippingLines}
+                    consignees={consignees}
+                    isLoading={isLoading}
+                    onSubmit={onSubmit}
+                  />
                 </>
               ) : (
                 <div className="text-center py-4">
@@ -1226,8 +1033,14 @@ const InTransit = () => {
 
       {/* Expanded Image Modal */}
       {expandedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setExpandedImage(null)}>
-          <div className="relative max-w-4xl max-h-[90vh] p-4" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div
+            className="relative max-w-4xl max-h-[90vh] p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => setExpandedImage(null)}
               className="absolute -top-2 -right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors z-10"
@@ -1240,8 +1053,9 @@ const InTransit = () => {
               className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.parentElement!.innerHTML = '<div class="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500"><svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
+                target.style.display = "none";
+                target.parentElement!.innerHTML =
+                  '<div class="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500"><svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
               }}
             />
           </div>

@@ -578,34 +578,7 @@ const SelectProduct: React.FC<SelectProductProps> = ({
 
           {/* Footer */}
           <DialogFooter className="border-t border-[#E1E5E9] px-6 py-5 bg-gradient-to-r from-[#F8F9FA] to-[#F3F4F6]">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center space-x-4">
-                <div className="text-sm text-[#5A5A5A]">
-                  <span className="font-bold text-[#0176D3] text-lg">
-                    {selectedProductIds.size}
-                  </span>{" "}
-                  product{selectedProductIds.size !== 1 ? "s" : ""} selected
-                </div>
-                {selectedProductIds.size > 0 && (
-                  <div className="h-4 w-px bg-[#D1D5DB]" />
-                )}
-                {selectedProductIds.size > 0 && (
-                  <button
-                    onClick={() => {
-                      // Clear all selections
-                      Array.from(selectedProductIds).forEach((productId) => {
-                        const product = availableProducts.find(
-                          (p) => p.id === productId
-                        );
-                        if (product) onProductSelection(product);
-                      });
-                    }}
-                    className="text-sm text-[#DC2626] hover:text-[#B91C1C] underline"
-                  >
-                    Clear Selection
-                  </button>
-                )}
-              </div>
+            <div className="flex items-center justify-end w-full">
               <div className="flex space-x-3">
                 <button
                   onClick={onClose}
@@ -628,7 +601,7 @@ const SelectProduct: React.FC<SelectProductProps> = ({
                     <>
                       <CheckCircle2 className="w-4 h-4" />
                       <span>
-                        Add {selectedProductIds.size} Product
+                        Add 
                         {selectedProductIds.size !== 1 ? "s" : ""}
                       </span>
                     </>

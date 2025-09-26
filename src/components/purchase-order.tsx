@@ -49,7 +49,7 @@ const PurchaseOrder = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
-      {/* Compact QuickBooks Header */}
+      {/* Header */}
       <div className="bg-white border-b border-[#E1E5E9] px-4 py-2.5 shadow-sm">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center space-x-2.5">
@@ -65,7 +65,7 @@ const PurchaseOrder = () => {
               </p>
             </div>
           </div>
-          <Button 
+          <Button
             onClick={handleCreateOrder}
             className="px-3 py-1.5 bg-[#0176D3] hover:bg-[#014F86] text-white rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md flex items-center space-x-1.5"
           >
@@ -137,7 +137,8 @@ const PurchaseOrder = () => {
                 Purchase Orders
               </h2>
               <div className="text-[11px] text-[#707070]">
-                {purchaseOrders.length} {purchaseOrders.length === 1 ? 'order' : 'orders'}
+                {purchaseOrders.length}{" "}
+                {purchaseOrders.length === 1 ? "order" : "orders"}
               </div>
             </div>
           </div>
@@ -145,43 +146,28 @@ const PurchaseOrder = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-[#F6F7F9] border-b border-[#E3E5E8]">
-                  <th className="text-left py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
+                    PO No.
+                  </th>
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Destination
                   </th>
-                  <th className="text-left py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Order Date
                   </th>
-                  <th className="text-left py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Order Reference
                   </th>
-                  <th className="text-left py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Supplier
                   </th>
-                  <th className="text-left py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Item
                   </th>
-                  <th className="text-left py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-left py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Design No.
                   </th>
-                  <th className="text-center py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
-                    Image
-                  </th>
-                  <th className="text-center py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
-                    Bale Qty
-                  </th>
-                  <th className="text-center py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
-                    Pcs/Bale
-                  </th>
-                  <th className="text-center py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
-                    Total Qty
-                  </th>
-                  <th className="text-center py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
-                    Total Yards
-                  </th>
-                  <th className="text-right py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
-                    Rate/Yard
-                  </th>
-                  <th className="text-right py-1.5 px-2.5 text-[#6B7C93] font-medium text-[10px]">
+                  <th className="text-right py-1.5 px-2.5 text-[#4e5a69] font-bold text-[12px]">
                     Value
                   </th>
                 </tr>
@@ -207,6 +193,9 @@ const PurchaseOrder = () => {
                       key={order.id}
                       className="border-b border-[#F6F7F9] hover:bg-[#FAFBFC] transition-colors duration-150"
                     >
+                      <td className="py-2 px-2.5 text-[#0077C5] font-medium text-[11px]">
+                        PO-52345
+                      </td>
                       <td className="py-2 px-2.5 text-[#393A3D] text-[11px]">
                         {order.destination}
                       </td>
@@ -224,26 +213,6 @@ const PurchaseOrder = () => {
                       </td>
                       <td className="py-2 px-2.5 text-[#6B7C93] font-mono text-[11px]">
                         {order.designNo}
-                      </td>
-                      <td className="py-2 px-2.5 text-center">
-                        <div className="w-6 h-6 bg-[#F6F7F9] rounded border border-[#E3E5E8] flex items-center justify-center mx-auto">
-                          <Package className="w-3 h-3 text-[#C1C7CD]" />
-                        </div>
-                      </td>
-                      <td className="py-2 px-2.5 text-center text-[#393A3D] text-[11px]">
-                        {order.baleQty}
-                      </td>
-                      <td className="py-2 px-2.5 text-center text-[#393A3D] text-[11px]">
-                        {order.pcsPerBale}
-                      </td>
-                      <td className="py-2 px-2.5 text-center text-[#393A3D] font-medium text-[11px]">
-                        {order.totalQtyPcs.toLocaleString()}
-                      </td>
-                      <td className="py-2 px-2.5 text-center text-[#393A3D] text-[11px]">
-                        {order.totalYards.toLocaleString()}
-                      </td>
-                      <td className="py-2 px-2.5 text-right text-[#393A3D] text-[11px]">
-                        ${order.ratePerYard.toFixed(2)}
                       </td>
                       <td className="py-2 px-2.5 text-right text-[#2CA01C] font-semibold text-[11px]">
                         ${order.value.toLocaleString()}
