@@ -25,74 +25,67 @@ import {
 import { Plus } from "lucide-react";
 
 // Form validation schema
-const countryFormSchema = z.object({
+const shippingStatusFormSchema = z.object({
   code: z
     .string()
-    .min(1, "Country code is required")
-    .max(3, "Country code must be 3 characters or less")
-    .regex(/^[A-Z]+$/, "Country code must contain only uppercase letters"),
-  countryCode: z
-    .string()
-    .min(1, "Country code is required")
-    .max(10, "Country code must be 10 characters or less"),
+    .min(1, "shippingStatus code is required")
+    .max(3, "shippingStatus code must be 3 characters or less")
+    .regex(/^[A-Z]+$/, "shippingStatus code must contain only uppercase letters"),
   title: z
     .string()
-    .min(1, "Country name is required")
-    .min(2, "Country name must be at least 2 characters"),
+    .min(1, "shippingStatus name is required")
+    .min(2, "shippingStatus name must be at least 2 characters"),
 });
 
-type CountryFormValues = z.infer<typeof countryFormSchema>;
+type shippingStatusFormValues = z.infer<typeof shippingStatusFormSchema>;
 
-interface Country {
+interface shippingStatus {
   id: number;
   code: string;
-  countryCode: string;
+  shippingStatusCode: string;
   title: string;
   createdAt: Date;
 }
 
-interface CountryDrawerProps {
+interface shippingStatusDrawerProps {
   isDrawerOpen: boolean;
   setIsDrawerOpen: (open: boolean) => void;
-  onSave: (data: CountryFormValues) => void;
-  editingCountry: Country | null;
+  onSave: (data: shippingStatusFormValues) => void;
+  editingshippingStatus: shippingStatus | null;
   triggerButton?: React.ReactNode;
 }
 
-const CountryDrawer: React.FC<CountryDrawerProps> = ({
+const shippingStatusDrawer: React.FC<shippingStatusDrawerProps> = ({
   isDrawerOpen,
   setIsDrawerOpen,
   onSave,
-  editingCountry,
+  editingshippingStatus,
   triggerButton,
 }) => {
-  const form = useForm<CountryFormValues>({
-    resolver: zodResolver(countryFormSchema),
+  const form = useForm<shippingStatusFormValues>({
+    resolver: zodResolver(shippingStatusFormSchema),
     defaultValues: {
       code: "",
-      countryCode: "",
       title: "",
     },
   });
 
-  // Reset form when editing country changes
+  // Reset form when editing shippingStatus changes
   useEffect(() => {
-    if (editingCountry) {
+    if (editingshippingStatus) {
       form.reset({
-        code: editingCountry.code,
-        countryCode: editingCountry.countryCode,
-        title: editingCountry.title,
+        code: editingshippingStatus.code,
+        title: editingshippingStatus.title,
       });
     } else {
       form.reset({
         code: "",
-        countryCode: "",
         title: "",
       });
     }
-  }, [editingCountry, form]);
+  }, [editingshippingStatus, form]);
 
-  const handleSubmit = (data: CountryFormValues) => {
+  const handleSubmit = (data: shippingStatusFormValues) => {
     onSave(data);
     form.reset();
     setIsDrawerOpen(false);
@@ -129,42 +122,18 @@ const CountryDrawer: React.FC<CountryDrawerProps> = ({
           <div className="flex flex-col h-full">
             <DrawerHeader className="border-b border-gray-200 px-4 py-3">
               <DrawerTitle className="text-base font-semibold text-gray-900">
-                {editingCountry ? "Edit Country" : "Country Information"}
+                {editingshippingStatus ? "Edit shippingStatus" : "shippingStatus Information"}
               </DrawerTitle>
               <DrawerDescription className="text-xs text-gray-600">
-                {editingCountry
-                  ? "Update country details"
-                  : "Enter country details"}
+                {editingshippingStatus
+                  ? "Update shippingStatus details"
+                  : "Enter shippingStatus details"}
               </DrawerDescription>
             </DrawerHeader>
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full">
                 <div className="flex-1 px-4 py-3 space-y-3">
-                  <FormField
-                    control={form.control}
-                    name="countryCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-medium text-gray-900">
-                          Country Code *
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="US"
-                            {...field}
-                            onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                            className={`border-gray-300 focus:border-[#0077C5] focus:ring-[#0077C5] text-sm h-8 ${
-                              form.formState.errors.countryCode ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
-                            }`}
-                            maxLength={3}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-red-600 text-xs mt-1" />
-                      </FormItem>
-                    )}
-                  />
-
                   <FormField
                     control={form.control}
                     name="code"
@@ -194,11 +163,11 @@ const CountryDrawer: React.FC<CountryDrawerProps> = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xs font-medium text-gray-900">
-                          Country Name *
+                          Shipping Status Name *
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="United States"
+                            placeholder="in Transit"
                             {...field}
                             className={`border-gray-300 focus:border-[#0077C5] focus:ring-[#0077C5] text-sm h-8 ${
                               form.formState.errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
@@ -217,7 +186,7 @@ const CountryDrawer: React.FC<CountryDrawerProps> = ({
                       type="submit"
                       className="bg-[#0077C5] hover:bg-[#005A94] text-white flex-1 h-8 text-sm"
                     >
-                      {editingCountry ? "Save" : "Save"}
+                      {editingshippingStatus ? "Save" : "Save"}
                     </Button>
                     <DrawerClose asChild>
                       <Button
@@ -240,4 +209,4 @@ const CountryDrawer: React.FC<CountryDrawerProps> = ({
   );
 };
 
-export default CountryDrawer;
+export default shippingStatusDrawer;

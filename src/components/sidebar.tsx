@@ -191,6 +191,12 @@ export function Sidebar({
               href: "/setup/general-setup/consignee",
               icon: <User className="w-3 h-3" />,
             },
+            {
+              id: "status",
+              label: "Shipping Status",
+              href: "/setup/general-setup/shipping-status",
+              icon: <User className="w-3 h-3" />,
+            },
           ],
         },
       ],
