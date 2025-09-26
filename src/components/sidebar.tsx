@@ -26,6 +26,8 @@ import {
   CurrencyIcon,
   Ship,
   ContainerIcon,
+  DockIcon,
+  Luggage,
 } from "lucide-react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import { TbBasket, TbDashboard } from "react-icons/tb";
@@ -91,7 +93,7 @@ export function Sidebar({
           href: "/setup/company-profile",
           icon: <Building2 className="w-3 h-3" />,
         },
-          // ITEM SETUP
+        // ITEM SETUP
         {
           id: "item-setup",
           label: "Item Setup",
@@ -234,7 +236,13 @@ export function Sidebar({
                   id: "telex-status",
                   label: "Telex Status",
                   href: "/entry/scm/purchase/telex-status",
-                  icon: <ContainerIcon className="w-3 h-3" />,
+                  icon: <DockIcon className="w-3 h-3" />,
+                },
+                {
+                  id: "inventory-onboard",
+                  label: "Inventory Onboard",
+                  href: "/entry/scm/purchase/inventory-onboard",
+                  icon: <Luggage className="w-3 h-3" />,
                 },
                 {
                   id: "goods-receipt",
@@ -529,7 +537,9 @@ export function Sidebar({
 
         {/* Navigation */}
         <div className="flex-1 py-2 overflow-y-auto sidebar-scroll">
-          <nav className="space-y-1 px-2">{menuItems.map((item) => renderMenuItem(item))}</nav>
+          <nav className="space-y-1 px-2">
+            {menuItems.map((item) => renderMenuItem(item))}
+          </nav>
         </div>
 
         {/* Footer */}

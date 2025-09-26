@@ -1,40 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { DataTable } from "@/components/ui/data-table";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Truck,
   Package,
   Ship,
   CheckCircle,
-  AlertCircle,
   Search,
-  ImageIcon,
-  CalendarDays,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -43,8 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import ShipmentDetailsForm from "./ShipmentDetailsForm";
+import ShipmentDetailsInventory from "./ShippingDetailsInventory";
 
 // Form validation schema
 const formSchema = z.object({
@@ -81,12 +54,13 @@ interface PurchaseOrder {
   orderReference: string;
   supplier: string;
   portOfDischarge: string;
+  telexStatus: "Released" | "Not Released";
   status:
-    | "Pending"
+    | "Off Load"
     | "In Transit"
     | "Port"
     | "Border"
-    | "Off load"
+    | "Off Load"
     | "Delivered";
   items: PurchaseOrderItem[];
   // Computed totals
@@ -115,7 +89,7 @@ interface InTransitFormData {
   invoiceNo: string;
 }
 
-const InTransit = () => {
+const InventoryOnboard = () => {
   // State management
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
   const [shippingLines, setShippingLines] = useState<ShippingLine[]>([]);
@@ -146,21 +120,30 @@ const InTransit = () => {
       header: "",
       cell: ({ row }) => {
         const po = row.original;
-        const isDisabled = po.status !== "Pending";
+        const isDisabled = po.status !== "Off Load";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div className="flex justify-center">
-            <input
-              type="radio"
-              name="selectedPO"
-              className="w-3.5 h-3.5 border-[#E1E5E9] text-[#0176D3] focus:ring-[#0176D3] focus:ring-offset-0 disabled:opacity-50 cursor-pointer"
-              disabled={isDisabled}
-              checked={selectedPO?.id === po.id}
-              onChange={() => {
-                if (po.status === "Pending") {
-                  setSelectedPO(po);
-                }
-              }}
-            />
+            <div className={`relative ${isSelected ? 'scale-110' : ''} transition-transform duration-200`}>
+              <input
+                type="radio"
+                name="selectedPO"
+                className={`w-4 h-4 border-2 text-[#0176D3] focus:ring-2 focus:ring-[#0176D3] focus:ring-offset-0 transition-all duration-200 ${
+                  isDisabled 
+                    ? 'opacity-30 cursor-not-allowed border-[#E1E5E9]' 
+                    : 'cursor-pointer border-[#0176D3] hover:border-[#014F86] hover:scale-110'
+                } ${
+                  isSelected ? 'ring-2 ring-[#0176D3] ring-offset-1' : ''
+                }`}
+                disabled={isDisabled}
+                checked={isSelected}
+                onChange={() => {
+                  if (po.status === "Off Load") {
+                    setSelectedPO(po);
+                  }
+                }}
+              />
+            </div>
           </div>
         );
       },
@@ -173,11 +156,19 @@ const InTransit = () => {
       header: "Destination",
       cell: ({ row }) => {
         const po = row.original;
+        const isDisabled = po.status !== "Off Load";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className="text-xs font-medium text-[#2E2E2E] cursor-pointer hover:text-[#0176D3]"
+            className={`text-xs font-medium transition-all duration-200 ${
+              isDisabled 
+                ? 'text-[#9CA3AF] cursor-not-allowed' 
+                : 'text-[#2E2E2E] cursor-pointer hover:text-[#0176D3] hover:font-semibold'
+            } ${
+              isSelected ? 'text-[#0176D3] font-semibold' : ''
+            }`}
             onClick={() => {
-              if (po.status === "Pending") {
+              if (po.status === "Off Load") {
                 setSelectedPO(po);
               }
             }}
@@ -196,7 +187,7 @@ const InTransit = () => {
           <div
             className="text-xs text-[#2E2E2E] cursor-pointer hover:text-[#0176D3] transition-colors"
             onClick={() => {
-              if (po.status === "Pending") {
+              if (po.status === "Off Load") {
                 setSelectedPO(po);
               }
             }}
@@ -214,11 +205,19 @@ const InTransit = () => {
       header: "PO #",
       cell: ({ row }) => {
         const po = row.original;
+        const isDisabled = po.status !== "Off Load";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className="text-xs font-medium text-[#0176D3] cursor-pointer hover:text-[#014F86] transition-colors"
+            className={`text-xs font-medium transition-all duration-200 ${
+              isDisabled 
+                ? 'text-[#9CA3AF] cursor-not-allowed' 
+                : 'text-[#0176D3] cursor-pointer hover:text-[#014F86] hover:underline hover:font-semibold'
+            } ${
+              isSelected ? 'text-[#014F86] font-semibold underline' : ''
+            }`}
             onClick={() => {
-              if (po.status === "Pending") {
+              if (po.status === "Off Load") {
                 setSelectedPO(po);
               }
             }}
@@ -233,12 +232,20 @@ const InTransit = () => {
       header: "Supplier",
       cell: ({ row }) => {
         const po = row.original;
+        const isDisabled = po.status !== "Off Load";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className="text-xs text-[#2E2E2E] truncate max-w-[120px] cursor-pointer hover:text-[#0176D3] transition-colors"
+            className={`text-xs truncate max-w-[120px] transition-all duration-200 ${
+              isDisabled 
+                ? 'text-[#9CA3AF] cursor-not-allowed' 
+                : 'text-[#2E2E2E] cursor-pointer hover:text-[#0176D3] hover:font-medium'
+            } ${
+              isSelected ? 'text-[#0176D3] font-medium' : ''
+            }`}
             title={row.getValue("supplier")}
             onClick={() => {
-              if (po.status === "Pending") {
+              if (po.status === "Off Load") {
                 setSelectedPO(po);
               }
             }}
@@ -271,17 +278,46 @@ const InTransit = () => {
       ),
     },
     {
+      accessorKey: "telex-status",
+      header: "Telex Status",
+      cell: ({ row }) => {
+        const status = row.original.telexStatus;
+        const po = row.original;
+        const isSelected = selectedPO?.id === po.id;
+        return (
+          <div
+            className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-[10px] font-bold transition-all duration-200 ${getStatusColor(
+              status
+            )} ${
+              isSelected ? 'scale-105 ring-2 ring-blue-200' : 'hover:scale-105'
+            }`}
+          >
+            <div className={`${isSelected ? 'animate-pulse' : ''}`}>
+              {getStatusIcon(status)}
+            </div>
+            <span>{status}</span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
+        const po = row.original;
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-xs font-medium ${getStatusColor(
+            className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-[10px] font-bold transition-all duration-200 ${getStatusColor(
               status
-            )}`}
+            )} ${
+              isSelected ? 'scale-105 ring-2 ring-blue-200' : 'hover:scale-105'
+            }`}
           >
-            {getStatusIcon(status)}
+            <div className={`${isSelected ? 'animate-pulse' : ''}`}>
+              {getStatusIcon(status)}
+            </div>
             <span>{status}</span>
           </div>
         );
@@ -383,7 +419,8 @@ const InTransit = () => {
         orderReference: "PO-2024-001",
         supplier: "ABC Textiles Ltd",
         portOfDischarge: "Karachi",
-        status: "Pending",
+        telexStatus: "Released",
+        status: "Off Load",
         items: [
           {
             id: "ITEM-001",
@@ -420,7 +457,8 @@ const InTransit = () => {
         orderReference: "PO-2024-002",
         supplier: "XYZ Fabrics Co",
         portOfDischarge: "Port Qasim",
-        status: "Pending",
+        telexStatus: "Released",
+        status: "Off Load",
         items: [
           {
             id: "ITEM-003",
@@ -445,7 +483,8 @@ const InTransit = () => {
         orderReference: "PO-2024-003",
         supplier: "Global Textiles Inc",
         portOfDischarge: "Gwadar",
-        status: "Pending",
+        telexStatus: "Released",
+        status: "Off Load",
         items: [
           {
             id: "ITEM-004",
@@ -482,7 +521,8 @@ const InTransit = () => {
         orderReference: "PO-2024-004",
         supplier: "Emirates Fabrics LLC",
         portOfDischarge: "Karachi",
-        status: "Pending",
+        telexStatus: "Released",
+        status: "Off Load",
         items: [
           {
             id: "ITEM-006",
@@ -519,7 +559,8 @@ const InTransit = () => {
         orderReference: "PO-2024-005",
         supplier: "British Textiles Ltd",
         portOfDischarge: "Port Qasim",
-        status: "Pending",
+        telexStatus: "Released",
+        status: "Off Load",
         items: [
           {
             id: "ITEM-008",
@@ -556,7 +597,8 @@ const InTransit = () => {
         orderReference: "PO-2024-006",
         supplier: "American Fabrics Co",
         portOfDischarge: "Karachi",
-        status: "Pending",
+        telexStatus: "Released",
+        status: "Off Load",
         items: [
           {
             id: "ITEM-010",
@@ -668,8 +710,8 @@ const InTransit = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "Pending":
-        return <AlertCircle className="w-3 h-3 text-amber-500" />;
+      case "Off Load":
+        return <CheckCircle className="w-3 h-3 text-blue-500" />;
       case "In Transit":
         return <Truck className="w-3 h-3 text-blue-500" />;
       case "Port":
@@ -681,26 +723,30 @@ const InTransit = () => {
       case "Delivered":
         return <CheckCircle className="w-3 h-3 text-green-500" />;
       default:
-        return <Package className="w-3 h-3 text-gray-500" />;
+        return <CheckCircle className="w-3 h-3 text-gray-600" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Pending":
-        return "bg-amber-50 text-amber-700 border-amber-200";
+      case "Off Load":
+        return "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-blue-300 shadow-sm";
       case "In Transit":
-        return "bg-blue-50 text-blue-700 border-blue-200";
+        return "bg-gradient-to-r from-amber-50 to-amber-100 text-amber-700 border-amber-300 shadow-sm";
       case "Port":
-        return "bg-cyan-50 text-cyan-700 border-cyan-200";
+        return "bg-gradient-to-r from-cyan-50 to-cyan-100 text-cyan-700 border-cyan-300 shadow-sm";
       case "Border":
-        return "bg-orange-50 text-orange-700 border-orange-200";
+        return "bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 border-orange-300 shadow-sm";
       case "Off load":
-        return "bg-purple-50 text-purple-700 border-purple-200";
+        return "bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border-purple-300 shadow-sm";
       case "Delivered":
-        return "bg-green-50 text-green-700 border-green-200";
+        return "bg-gradient-to-r from-green-50 to-green-100 text-green-700 border-green-300 shadow-sm";
+      case "Released":
+        return "bg-gradient-to-r from-emerald-50 to-emerald-100 text-emerald-700 border-emerald-300 shadow-sm";
+      case "Not Released":
+        return "bg-gradient-to-r from-red-50 to-red-100 text-red-700 border-red-300 shadow-sm";
       default:
-        return "bg-gray-50 text-gray-700 border-gray-200";
+        return "bg-gradient-to-r from-gray-50 to-gray-100 text-gray-600 border-gray-300 shadow-sm";
     }
   };
 
@@ -715,10 +761,10 @@ const InTransit = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold text-[#2E2E2E] tracking-tight">
-                In Transit Management
+                Inventory Onboarding
               </h1>
               <p className="text-[#707070] text-[10px] -mt-0.5">
-                Manage shipments and track orders in transit
+                Manage and track incoming inventory shipments
               </p>
             </div>
           </div>
@@ -777,111 +823,31 @@ const InTransit = () => {
             </div>
 
             <div className="p-2">
-              <div className="rounded-lg border border-[#E3E5E8] overflow-auto">
-                <div className="overflow-x-auto">
-                  <table className="w-[920px] overflow-x-scroll table-auto">
-                    <thead>
-                      <tr className="bg-[#F6F7F9] border-b border-[#E3E5E8]">
-                        {columns.map((column, index) => (
-                          <th
-                            key={index}
-                            className="text-left py-2 px-3 text-xs font-semibold text-[#393A3D]"
-                          >
-                            {typeof column.header === "string"
-                              ? column.header
-                              : ""}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {purchaseOrders
-                        .filter(
-                          (po) =>
-                            globalFilter === "" ||
-                            po.orderReference
-                              .toLowerCase()
-                              .includes(globalFilter.toLowerCase()) ||
-                            po.supplier
-                              .toLowerCase()
-                              .includes(globalFilter.toLowerCase()) ||
-                            po.destination
-                              .toLowerCase()
-                              .includes(globalFilter.toLowerCase()) ||
-                            po.items.some(
-                              (item) =>
-                                item.itemName
-                                  .toLowerCase()
-                                  .includes(globalFilter.toLowerCase()) ||
-                                item.designNo
-                                  .toLowerCase()
-                                  .includes(globalFilter.toLowerCase())
-                            )
-                        )
-                        .map((po) => (
-                          <tr
-                            key={po.id}
-                            className={`border-b border-[#F6F7F9] hover:bg-[#FAFBFC] cursor-pointer transition-colors ${
-                              selectedPO?.id === po.id
-                                ? "bg-[#EBF4FA] border-[#0176D3]/20"
-                                : ""
-                            }`}
-                            onClick={() => {
-                              if (po.status === "Pending") {
-                                setSelectedPO(po);
-                              }
-                            }}
-                          >
-                            {columns.map((column, colIndex) => (
-                              <td key={colIndex} className="py-1 px-3">
-                                {typeof column.cell === "function"
-                                  ? column.cell({
-                                      row: {
-                                        original: po,
-                                        getValue: (key: string) =>
-                                          po[key as keyof PurchaseOrder],
-                                      },
-                                    } as any)
-                                  : column.cell}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      {purchaseOrders.filter(
-                        (po) =>
-                          globalFilter === "" ||
-                          po.orderReference
-                            .toLowerCase()
-                            .includes(globalFilter.toLowerCase()) ||
-                          po.supplier
-                            .toLowerCase()
-                            .includes(globalFilter.toLowerCase()) ||
-                          po.destination
-                            .toLowerCase()
-                            .includes(globalFilter.toLowerCase()) ||
-                          po.items.some(
-                            (item) =>
-                              item.itemName
-                                .toLowerCase()
-                                .includes(globalFilter.toLowerCase()) ||
-                              item.designNo
-                                .toLowerCase()
-                                .includes(globalFilter.toLowerCase())
-                          )
-                      ).length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={columns.length}
-                            className="py-8 px-4 text-center text-xs text-[#6B7C93]"
-                          >
-                            No purchase orders found matching your search.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <DataTable 
+                columns={columns} 
+                data={purchaseOrders.filter(
+                  (po) =>
+                    globalFilter === "" ||
+                    po.orderReference
+                      .toLowerCase()
+                      .includes(globalFilter.toLowerCase()) ||
+                    po.supplier
+                      .toLowerCase()
+                      .includes(globalFilter.toLowerCase()) ||
+                    po.destination
+                      .toLowerCase()
+                      .includes(globalFilter.toLowerCase()) ||
+                    po.items.some(
+                      (item) =>
+                        item.itemName
+                          .toLowerCase()
+                          .includes(globalFilter.toLowerCase()) ||
+                        item.designNo
+                          .toLowerCase()
+                          .includes(globalFilter.toLowerCase())
+                    )
+                )}
+              />
             </div>
           </div>
 
@@ -1003,27 +969,75 @@ const InTransit = () => {
                     </div>
                   </div>
 
-                  {/* Shipping Form */}
-                  <ShipmentDetailsForm
-                    form={form}
-                    shippingLines={shippingLines}
-                    consignees={consignees}
-                    isLoading={isLoading}
-                    onSubmit={onSubmit}
-                  />
+                  {/* Shipping Information Display */}
+                  <div className="bg-white rounded-md border border-[#E1E5E9] shadow-sm animate-in slide-in-from-top-6 duration-700">
+                    <div className="px-2.5 py-1.5 border-b border-[#E1E5E9] bg-[#FAFBFC]">
+                      <h3 className="text-xs font-semibold text-[#2E2E2E] uppercase tracking-wide">
+                        Shipping Information
+                      </h3>
+                    </div>
+                    <div className="p-2.5">
+                      <div className="text-xs space-y-1.5">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Shipping Line:</span>
+                          <span className="text-gray-800 font-semibold">MAERSK</span>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Consignee:</span>
+                          <span className="text-gray-800 font-semibold">PolyTex Zambia</span>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Container Type:</span>
+                          <span className="text-gray-800">40ft HC</span>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Bill of Lading:</span>
+                          <span className="text-gray-800 font-mono text-[11px]">MAEU9876543210</span>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Container No:</span>
+                          <span className="text-gray-800 font-mono text-[11px]">MSCU1234567</span>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Invoice No:</span>
+                          <span className="text-gray-800 font-mono text-[11px]">INV-2024-001</span>
+                        </div>
+                        
+                        <div className="border-t border-gray-100 my-2"></div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">ETA:</span>
+                          <span className="text-gray-800 font-semibold">March 15, 2024</span>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 font-medium">Current Status:</span>
+                          <span className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border border-blue-300 text-[10px] font-bold">
+                            <CheckCircle className="w-3 h-3" />
+                            <span>Off Load</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </>
               ) : (
-                <div className="text-center py-4">
-                  <div className="w-10 h-10 mx-auto mb-2 bg-[#F8F9FA] rounded-full flex items-center justify-center border border-[#E1E5E9]">
-                    <Package className="w-5 h-5 text-[#707070]" />
+                <div className="text-center py-8 px-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#E1E5E9] to-[#F8F9FA] rounded-lg mx-auto mb-3 flex items-center justify-center">
+                    <Package className="w-6 h-6 text-[#9CA3AF]" />
                   </div>
-                  <h3 className="text-sm font-medium text-[#2E2E2E] mb-1">
-                    Select Purchase Order
-                  </h3>
-                  <p className="text-xs text-[#707070] px-3 leading-relaxed">
-                    Choose a purchase order from the left panel to begin
-                    processing shipment details
+                  <h3 className="text-sm font-medium text-[#2E2E2E] mb-1">No Purchase Order Selected</h3>
+                  <p className="text-xs text-[#707070] mb-4 leading-relaxed">
+                    Select a purchase order from the list to view shipping details
                   </p>
+                  <div className="text-xs text-[#9CA3AF] bg-[#F8F9FA] p-3 rounded-lg border border-[#E1E5E9]">
+                    <span className="font-medium">Note:</span> Only orders with "Off Load" status can be processed
+                  </div>
                 </div>
               )}
             </div>
@@ -1065,4 +1079,4 @@ const InTransit = () => {
   );
 };
 
-export default InTransit;
+export default InventoryOnboard;

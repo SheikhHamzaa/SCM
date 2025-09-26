@@ -388,11 +388,11 @@ const CreatePurchaseOrder: React.FC<CreatePurchaseOrderProps> = ({
         selectedProducts.length === 1
           ? selectedProducts[0].designNo
           : designNumbers,
-      image: selectedProducts[0].image,
-      baleQty: selectedProducts.length,
-      pcsPerBale: Math.round(totalQty / selectedProducts.length),
+      image: selectedProducts.length === 1 ? selectedProducts[0].image : "",
+      baleQty: 0,
+      pcsPerBale: 0,
       totalQtyPcs: totalQty,
-      totalYards: totalQty,
+      totalYards: totalQty, // Assuming 1:1 for now
       ratePerYard: avgRate,
       value: totalValue,
     };
