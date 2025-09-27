@@ -672,14 +672,14 @@ const InventoryOnboard = () => {
       setPurchaseOrders((prev) =>
         prev.map((po) =>
           po.id === selectedPO.id
-            ? { ...po, status: values.shipmentStatus as any }
+            ? { ...po, status: values.shipmentStatus as PurchaseOrder["status"] }
             : po
         )
       );
 
       // Update selected PO state to reflect the change
       setSelectedPO((prev) =>
-        prev ? { ...prev, status: values.shipmentStatus as any } : null
+        prev ? { ...prev, status: values.shipmentStatus as PurchaseOrder["status"] } : null
       );
 
       // Reset form but keep the PO selected
@@ -699,7 +699,7 @@ const InventoryOnboard = () => {
           },
         }
       );
-    } catch (error) {
+    } catch {
       toast.error("Failed to update shipment status", {
         description: "Please try again or contact support",
       });
@@ -1036,7 +1036,7 @@ const InventoryOnboard = () => {
                     Select a purchase order from the list to view shipping details
                   </p>
                   <div className="text-xs text-[#9CA3AF] bg-[#F8F9FA] p-3 rounded-lg border border-[#E1E5E9]">
-                    <span className="font-medium">Note:</span> Only orders with "Off Load" status can be processed
+                    <span className="font-medium">Note:</span> Only orders with &quot;Off Load&quot; status can be processed
                   </div>
                 </div>
               )}

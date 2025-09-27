@@ -147,20 +147,29 @@ const InTransit = () => {
       cell: ({ row }) => {
         const po = row.original;
         const isDisabled = po.status !== "Pending";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div className="flex justify-center">
-            <input
-              type="radio"
-              name="selectedPO"
-              className="w-3.5 h-3.5 border-[#E1E5E9] text-[#0176D3] focus:ring-[#0176D3] focus:ring-offset-0 disabled:opacity-50 cursor-pointer"
-              disabled={isDisabled}
-              checked={selectedPO?.id === po.id}
-              onChange={() => {
-                if (po.status === "Pending") {
-                  setSelectedPO(po);
-                }
-              }}
-            />
+            <div className={`relative ${isSelected ? 'scale-110' : ''} transition-transform duration-200`}>
+              <input
+                type="radio"
+                name="selectedPO"
+                className={`w-4 h-4 border-2 text-[#0176D3] focus:ring-2 focus:ring-[#0176D3] focus:ring-offset-0 transition-all duration-200 ${
+                  isDisabled 
+                    ? 'opacity-30 cursor-not-allowed border-[#E1E5E9]' 
+                    : 'cursor-pointer border-[#0176D3] hover:border-[#014F86] hover:scale-110'
+                } ${
+                  isSelected ? 'ring-2 ring-[#0176D3] ring-offset-1' : ''
+                }`}
+                disabled={isDisabled}
+                checked={isSelected}
+                onChange={() => {
+                  if (po.status === "Pending") {
+                    setSelectedPO(po);
+                  }
+                }}
+              />
+            </div>
           </div>
         );
       },
@@ -173,9 +182,17 @@ const InTransit = () => {
       header: "Destination",
       cell: ({ row }) => {
         const po = row.original;
+        const isDisabled = po.status !== "Pending";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className="text-xs font-medium text-[#2E2E2E] cursor-pointer hover:text-[#0176D3]"
+            className={`text-xs font-medium transition-all duration-200 ${
+              isDisabled 
+                ? 'text-[#9CA3AF] cursor-not-allowed' 
+                : 'text-[#2E2E2E] cursor-pointer hover:text-[#0176D3] hover:font-semibold'
+            } ${
+              isSelected ? 'text-[#0176D3] font-semibold' : ''
+            }`}
             onClick={() => {
               if (po.status === "Pending") {
                 setSelectedPO(po);
@@ -214,9 +231,17 @@ const InTransit = () => {
       header: "PO #",
       cell: ({ row }) => {
         const po = row.original;
+        const isDisabled = po.status !== "Pending";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className="text-xs font-medium text-[#0176D3] cursor-pointer hover:text-[#014F86] transition-colors"
+            className={`text-xs font-medium transition-all duration-200 ${
+              isDisabled 
+                ? 'text-[#9CA3AF] cursor-not-allowed' 
+                : 'text-[#0176D3] cursor-pointer hover:text-[#014F86] hover:underline hover:font-semibold'
+            } ${
+              isSelected ? 'text-[#014F86] font-semibold underline' : ''
+            }`}
             onClick={() => {
               if (po.status === "Pending") {
                 setSelectedPO(po);
@@ -233,9 +258,17 @@ const InTransit = () => {
       header: "Supplier",
       cell: ({ row }) => {
         const po = row.original;
+        const isDisabled = po.status !== "Pending";
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className="text-xs text-[#2E2E2E] truncate max-w-[120px] cursor-pointer hover:text-[#0176D3] transition-colors"
+            className={`text-xs truncate max-w-[120px] transition-all duration-200 ${
+              isDisabled 
+                ? 'text-[#9CA3AF] cursor-not-allowed' 
+                : 'text-[#2E2E2E] cursor-pointer hover:text-[#0176D3] hover:font-medium'
+            } ${
+              isSelected ? 'text-[#0176D3] font-medium' : ''
+            }`}
             title={row.getValue("supplier")}
             onClick={() => {
               if (po.status === "Pending") {
@@ -275,13 +308,19 @@ const InTransit = () => {
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
+        const po = row.original;
+        const isSelected = selectedPO?.id === po.id;
         return (
           <div
-            className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-xs font-medium ${getStatusColor(
+            className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-[10px] font-bold transition-all duration-200 ${getStatusColor(
               status
-            )}`}
+            )} ${
+              isSelected ? 'scale-105 ring-2 ring-blue-200' : 'hover:scale-105'
+            }`}
           >
-            {getStatusIcon(status)}
+            <div className={`${isSelected ? 'animate-pulse' : ''}`}>
+              {getStatusIcon(status)}
+            </div>
             <span>{status}</span>
           </div>
         );
@@ -630,14 +669,14 @@ const InTransit = () => {
       setPurchaseOrders((prev) =>
         prev.map((po) =>
           po.id === selectedPO.id
-            ? { ...po, status: values.shipmentStatus as any }
+            ? { ...po, status: values.shipmentStatus as PurchaseOrder["status"] }
             : po
         )
       );
 
       // Update selected PO state to reflect the change
       setSelectedPO((prev) =>
-        prev ? { ...prev, status: values.shipmentStatus as any } : null
+        prev ? { ...prev, status: values.shipmentStatus as PurchaseOrder["status"] } : null
       );
 
       // Reset form but keep the PO selected
@@ -657,7 +696,7 @@ const InTransit = () => {
           },
         }
       );
-    } catch (error) {
+    } catch {
       toast.error("Failed to update shipment status", {
         description: "Please try again or contact support",
       });
@@ -688,19 +727,19 @@ const InTransit = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Pending":
-        return "bg-amber-50 text-amber-700 border-amber-200";
+        return "bg-gradient-to-r from-amber-50 to-amber-100 text-amber-700 border-amber-300 shadow-sm";
       case "In Transit":
-        return "bg-blue-50 text-blue-700 border-blue-200";
+        return "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-blue-300 shadow-sm";
       case "Port":
-        return "bg-cyan-50 text-cyan-700 border-cyan-200";
+        return "bg-gradient-to-r from-cyan-50 to-cyan-100 text-cyan-700 border-cyan-300 shadow-sm";
       case "Border":
-        return "bg-orange-50 text-orange-700 border-orange-200";
+        return "bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 border-orange-300 shadow-sm";
       case "Off load":
-        return "bg-purple-50 text-purple-700 border-purple-200";
+        return "bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border-purple-300 shadow-sm";
       case "Delivered":
-        return "bg-green-50 text-green-700 border-green-200";
+        return "bg-gradient-to-r from-green-50 to-green-100 text-green-700 border-green-300 shadow-sm";
       default:
-        return "bg-gray-50 text-gray-700 border-gray-200";
+        return "bg-gradient-to-r from-gray-50 to-gray-100 text-gray-600 border-gray-300 shadow-sm";
     }
   };
 
@@ -777,111 +816,31 @@ const InTransit = () => {
             </div>
 
             <div className="p-2">
-              <div className="rounded-lg border border-[#E3E5E8] overflow-auto">
-                <div className="overflow-x-auto">
-                  <table className="w-[920px] overflow-x-scroll table-auto">
-                    <thead>
-                      <tr className="bg-[#F6F7F9] border-b border-[#E3E5E8]">
-                        {columns.map((column, index) => (
-                          <th
-                            key={index}
-                            className="text-left py-2 px-3 text-xs font-semibold text-[#393A3D]"
-                          >
-                            {typeof column.header === "string"
-                              ? column.header
-                              : ""}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {purchaseOrders
-                        .filter(
-                          (po) =>
-                            globalFilter === "" ||
-                            po.orderReference
-                              .toLowerCase()
-                              .includes(globalFilter.toLowerCase()) ||
-                            po.supplier
-                              .toLowerCase()
-                              .includes(globalFilter.toLowerCase()) ||
-                            po.destination
-                              .toLowerCase()
-                              .includes(globalFilter.toLowerCase()) ||
-                            po.items.some(
-                              (item) =>
-                                item.itemName
-                                  .toLowerCase()
-                                  .includes(globalFilter.toLowerCase()) ||
-                                item.designNo
-                                  .toLowerCase()
-                                  .includes(globalFilter.toLowerCase())
-                            )
-                        )
-                        .map((po) => (
-                          <tr
-                            key={po.id}
-                            className={`border-b border-[#F6F7F9] hover:bg-[#FAFBFC] cursor-pointer transition-colors ${
-                              selectedPO?.id === po.id
-                                ? "bg-[#EBF4FA] border-[#0176D3]/20"
-                                : ""
-                            }`}
-                            onClick={() => {
-                              if (po.status === "Pending") {
-                                setSelectedPO(po);
-                              }
-                            }}
-                          >
-                            {columns.map((column, colIndex) => (
-                              <td key={colIndex} className="py-1 px-3">
-                                {typeof column.cell === "function"
-                                  ? column.cell({
-                                      row: {
-                                        original: po,
-                                        getValue: (key: string) =>
-                                          po[key as keyof PurchaseOrder],
-                                      },
-                                    } as any)
-                                  : column.cell}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      {purchaseOrders.filter(
-                        (po) =>
-                          globalFilter === "" ||
-                          po.orderReference
-                            .toLowerCase()
-                            .includes(globalFilter.toLowerCase()) ||
-                          po.supplier
-                            .toLowerCase()
-                            .includes(globalFilter.toLowerCase()) ||
-                          po.destination
-                            .toLowerCase()
-                            .includes(globalFilter.toLowerCase()) ||
-                          po.items.some(
-                            (item) =>
-                              item.itemName
-                                .toLowerCase()
-                                .includes(globalFilter.toLowerCase()) ||
-                              item.designNo
-                                .toLowerCase()
-                                .includes(globalFilter.toLowerCase())
-                          )
-                      ).length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={columns.length}
-                            className="py-8 px-4 text-center text-xs text-[#6B7C93]"
-                          >
-                            No purchase orders found matching your search.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <DataTable 
+                columns={columns} 
+                data={purchaseOrders.filter(
+                  (po) =>
+                    globalFilter === "" ||
+                    po.orderReference
+                      .toLowerCase()
+                      .includes(globalFilter.toLowerCase()) ||
+                    po.supplier
+                      .toLowerCase()
+                      .includes(globalFilter.toLowerCase()) ||
+                    po.destination
+                      .toLowerCase()
+                      .includes(globalFilter.toLowerCase()) ||
+                    po.items.some(
+                      (item) =>
+                        item.itemName
+                          .toLowerCase()
+                          .includes(globalFilter.toLowerCase()) ||
+                        item.designNo
+                          .toLowerCase()
+                          .includes(globalFilter.toLowerCase())
+                    )
+                )}
+              />
             </div>
           </div>
 
@@ -1013,17 +972,17 @@ const InTransit = () => {
                   />
                 </>
               ) : (
-                <div className="text-center py-4">
-                  <div className="w-10 h-10 mx-auto mb-2 bg-[#F8F9FA] rounded-full flex items-center justify-center border border-[#E1E5E9]">
-                    <Package className="w-5 h-5 text-[#707070]" />
+                <div className="text-center py-8 px-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#E1E5E9] to-[#F8F9FA] rounded-lg mx-auto mb-3 flex items-center justify-center">
+                    <Package className="w-6 h-6 text-[#9CA3AF]" />
                   </div>
-                  <h3 className="text-sm font-medium text-[#2E2E2E] mb-1">
-                    Select Purchase Order
-                  </h3>
-                  <p className="text-xs text-[#707070] px-3 leading-relaxed">
-                    Choose a purchase order from the left panel to begin
-                    processing shipment details
+                  <h3 className="text-sm font-medium text-[#2E2E2E] mb-1">No Purchase Order Selected</h3>
+                  <p className="text-xs text-[#707070] mb-4 leading-relaxed">
+                    Select a purchase order from the list to begin processing shipment details
                   </p>
+                  <div className="text-xs text-[#9CA3AF] bg-[#F8F9FA] p-3 rounded-lg border border-[#E1E5E9]">
+                    <span className="font-medium">Note:</span> Only orders with Pending status can be processed
+                  </div>
                 </div>
               )}
             </div>
